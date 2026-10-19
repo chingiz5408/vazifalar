@@ -1,0 +1,44 @@
+:root{color-scheme:light;--bg:#f5f7fb;--panel:#fff;--text:#172033;--muted:#68748a;--line:#e1e7f0;--accent:#355de8;--accent-soft:#edf1ff;--green:#16845e;--green-soft:#f2fbf7;--red:#b42335;--red-soft:#fff6f6;--shadow:0 18px 50px #1a2c4d12}
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}
+.topbar{height:68px;padding:0 max(24px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.02em}
+.brand-mark{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--accent);color:#fff;font-size:14px;font-weight:700}
+.back-link{color:var(--accent);font-size:13px;font-weight:650}
+.page{width:min(100% - 32px,760px);margin:48px auto}
+.test-card{padding:clamp(22px,5vw,40px);border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow)}
+.eyebrow{margin:0 0 10px;color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.12em}
+h1{margin:0;font-size:clamp(27px,5vw,38px);line-height:1.2;letter-spacing:-.04em}
+.instruction{margin:12px 0 0;color:var(--muted);font-size:16px}
+.test-progress{margin:12px 0 18px;color:var(--muted);font-size:12px}
+.questions{display:grid;gap:13px;margin:0;padding:0;list-style:none}
+.question{padding:16px;border:1px solid var(--line);border-radius:12px;transition:border-color .15s,background .15s}
+.question.correct{border-color:#91d6bd;background:var(--green-soft)}
+.question.incorrect{border-color:#f0b3ba;background:var(--red-soft)}
+.question.unanswered{border-color:#e7bd71;background:#fffaf0}
+.question-fieldset{min-width:0;margin:0;padding:0;border:0}
+.question legend{width:100%;padding:0;font-weight:680}
+.question-number{display:inline-grid;place-items:center;width:27px;height:27px;margin-right:8px;border-radius:8px;background:#f0f3f8;color:var(--muted);font-size:12px;font-weight:750;vertical-align:middle}
+.options{display:grid;gap:7px;margin-top:13px}
+.option{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s}
+.option:hover{border-color:#a9b9ff;background:#fafbff}
+.option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.option input{flex:0 0 auto;margin:4px 0 0;accent-color:var(--accent)}
+.option-text{font-size:14px}
+.question-result{min-height:0;margin:0;color:var(--muted);font-size:12px}
+.question-result:not(:empty){margin-top:9px}
+.question.correct .question-result{color:var(--green)}
+.question.incorrect .question-result,.question.unanswered .question-result{color:var(--red)}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px}
+.primary-button,.secondary-button{min-height:42px;padding:9px 15px;border:1px solid transparent;border-radius:9px;font:inherit;font-weight:650;cursor:pointer}
+.primary-button{background:var(--accent);color:#fff}
+.primary-button:hover{background:#294ecb}
+.secondary-button{border-color:var(--line);background:var(--panel);color:var(--text)}
+.secondary-button:hover{border-color:var(--accent);color:var(--accent)}
+.test-result{margin-top:20px;padding:15px;border:1px solid #c8d4ff;border-radius:11px;background:#f7f8ff}
+.test-result strong{display:block;font-size:17px}
+.test-result p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.mobile-back{display:none}
+@media(max-width:560px){.topbar{height:60px;padding:0 16px}.topbar>.back-link{display:none}.page{width:calc(100% - 24px);margin:24px auto}.test-card{padding:22px 16px}.instruction{font-size:14px}.question{padding:12px}.question legend{font-size:14px}.option-text{font-size:13px}.actions{flex-direction:column-reverse}.actions button{width:100%}.mobile-back{display:inline-block;margin:0 0 14px 3px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}

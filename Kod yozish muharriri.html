@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Kod yozish</title>
+  <link rel="stylesheet" href="Kod yozish muharriri.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="Oquvchi.html"><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><span>Algoritmika</span></a>
+    <a class="back-link" href="Oquvchi.html">← Kursga qaytish</a>
+  </header>
+  <main class="workspace">
+    <a class="back-link mobile-back" href="Oquvchi.html">← Kursga qaytish</a>
+    <section class="problem-panel" aria-labelledby="problem-title">
+      <div class="problem-heading">
+        <div>
+          <p class="eyebrow">DASTURLASH AMALIYOTI</p>
+          <h1 id="problem-title">Kod yozish topshirig‘i</h1>
+        </div>
+        <span id="problem-level" class="level-badge"></span>
+      </div>
+      <p id="problem-description" class="problem-description"></p>
+      <div class="io-details">
+        <section><h2>Kirish ma’lumoti</h2><p id="problem-input"></p></section>
+        <section><h2>Chiqish ma’lumoti</h2><p id="problem-output"></p></section>
+      </div>
+      <div class="example">
+        <h2>Namuna</h2>
+        <div class="example-columns">
+          <p><span>Kirish</span><code id="sample-input"></code></p>
+          <p><span>Chiqish</span><code id="sample-output"></code></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="editor-panel" aria-label="Dastur kodi muharriri">
+      <div class="editor-toolbar">
+        <label for="language">Dasturlash tili</label>
+        <select id="language" name="language">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="cpp">C++</option>
+          <option value="java">Java</option>
+        </select>
+        <span class="indent-legend" title="Python’da 4 ta bo‘sh joy — bitta ichki daraja">···· = 1 qadam</span>
+        <span id="file-name" class="file-name">main.py</span>
+      </div>
+      <div class="code-editor">
+        <pre id="line-numbers" class="line-numbers" aria-hidden="true">1</pre>
+        <div class="code-input-wrap">
+          <pre id="whitespace-guides" class="whitespace-guides" aria-hidden="true"></pre>
+          <textarea id="source-code" aria-label="Dastur kodini yozing" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+        </div>
+      </div>
+      <div class="editor-footer">
+        <span id="code-info">Python · 1 qator</span>
+        <span class="backend-note">Kod tekshirish va ishga tushirish keyin ulanadi</span>
+      </div>
+      <div class="submit-row">
+        <p id="submit-status" role="status" aria-live="polite"></p>
+        <button id="submit-code" class="submit-button" type="button"><span aria-hidden="true">↑</span> Yuborish</button>
+      </div>
+    </section>
+  </main>
+  <script src="Kod yozish topshiriqlari.js"></script>
+  <script src="Kod yozish muharriri.js"></script>
+</body>
+</html>

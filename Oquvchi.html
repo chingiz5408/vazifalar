@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>Topshiriqlar · Sputnik Academy</title>
+  <link rel="stylesheet" href="Kirish.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="Oquvchi.html" aria-label="Sputnik Academy o‘quvchi paneli">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>Sputnik Academy</span>
+    </a>
+    <nav class="header-actions" aria-label="O‘quvchi amallari">
+      <a class="editor-link" href="Algoritm muharriri.html">Algoritm muharriri <span aria-hidden="true">↗</span></a>
+      <a id="logout" class="register-link" href="Kirish.html">Chiqish</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <p class="eyebrow">BACKEND DASTURLASH · TOPSHIRIQLAR</p>
+      <h1>Salom, <span id="student-name">o‘quvchi</span>!</h1>
+      <p class="intro">Vazifani tanlang, masalani tahlil qiling, yechimingizni dasturda bajaring va natijani tekshiring.</p>
+      <div class="course-meta"><span>4 ta yo‘nalish</span><span>·</span><span>Kod va algoritm amaliyoti</span></div>
+    </section>
+
+    <section class="modules-section" aria-labelledby="modules-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SPUTNIK ACADEMY · BACKEND KURSI</p>
+          <h2 id="modules-title">Topshiriq yo‘nalishlari</h2>
+        </div>
+        <p class="section-note">Yo‘nalishni tanlang va amaliy vazifani bajaring.</p>
+      </div>
+      <div id="modules" class="modules"></div>
+    </section>
+  </main>
+
+  <footer>Sputnik Academy <span>·</span> Masalani tahlil qiling, yechimni asoslang, kodni tekshiring</footer>
+
+  <dialog id="task-dialog" aria-labelledby="task-title">
+    <button id="task-close" class="dialog-close" type="button" aria-label="Yopish">×</button>
+    <span id="task-type" class="task-type"></span>
+    <h2 id="task-title"></h2>
+    <p id="task-description"></p>
+    <p class="dialog-note">Topshiriq tavsifi va bajarish vositasi shu yerda beriladi.</p>
+    <button id="task-dismiss" class="primary-button" type="button">Tushunarli</button>
+  </dialog>
+
+  <script src="Kirish.js"></script>
+  <script src="Oquvchi.js"></script>
+</body>
+</html>

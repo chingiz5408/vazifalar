@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algoritm muharriri</title>
+<link rel="stylesheet" href="Algoritm muharriri.css">
+</head>
+<body>
+<header>
+  <a href="Oquvchi.html" aria-label="Kurs sahifasiga qaytish" title="Kurs sahifasiga qaytish">← Kurs</a>
+  <h1>Algoritm muharriri</h1>
+  <button id="demo">Namuna</button>
+  <button id="del">O‘chirish</button>
+  <button id="clear">Tozalash</button>
+  <button id="run">Ishga tushirish</button>
+</header>
+<div class="app">
+  <aside>
+    <h2>Shakllar</h2>
+    <div id="pal"></div>
+    <h2>Bog’lanishlar</h2>
+    <ol id="links"></ol>
+    <h2>O‘zgaruvchilar</h2>
+    <div id="variables" class="variables"></div>
+  </aside>
+  <main id="main">
+    <div class="zoom-controls" aria-label="Ishchi maydon masshtabi">
+      <button id="zoom-out" type="button" aria-label="Kichiklashtirish" title="Kichiklashtirish">−</button>
+      <output id="zoom-level" aria-live="polite">100%</output>
+      <button id="zoom-in" type="button" aria-label="Kattalashtirish" title="Kattalashtirish">+</button>
+      <button id="zoom-reset" type="button" title="Masshtabni tiklash">Tiklash</button>
+    </div>
+    <svg id="ws">
+      <defs>
+        <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern>
+        <pattern id="G" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="url(#g)"/><path d="M100 0H0V100" fill="none" stroke="var(--line)" stroke-width="1"/></pattern>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--edge)"/></marker>
+      </defs>
+      <rect id="bg" width="100%" height="100%" fill="url(#G)"/>
+      <g id="viewport"><g id="gE"></g><g id="gN"></g><path id="tmp" class="edge" stroke-dasharray="5 4" marker-end="url(#ar)"/></g>
+    </svg>
+    <input id="edit">
+    <div class="hint">Shaklni sudrab olib keling · nuqtadan tortib boshqa shaklga ulang · bo‘sh joyni sudrab suring · g‘ildirak bilan zoom · ikki marta bosing — matn · Delete — o‘chirish</div>
+  </main>
+</div>
+<dialog id="run-dialog">
+  <h2>Algoritmni ishga tushirish</h2>
+  <div id="run-inputs"></div>
+  <p id="run-result" role="status" aria-live="polite"></p>
+  <div class="run-actions">
+    <button id="run-close" type="button">Yopish</button>
+    <button id="run-submit" type="button">Ishga tushirish</button>
+  </div>
+</dialog>
+<script src="Algoritm bajarish.js"></script>
+<script src="Algoritm muharriri.js"></script>
+</body>
+</html>
