@@ -2,6 +2,8 @@ window.CodeWritingTasks={
   'ikki-son-yigindisi':{
     title:'Ikki son yig‘indisi',
     level:'Boshlang‘ich',
+    topic:'Ikkita butun son yig‘indisini hisoblash',
+    functionName:'Natija = a + b',
     description:'Ikkita butun son beriladi. Ularning yig‘indisini hisoblab, natijani ekranga chiqaring.',
     input:'Bitta qatorda ikkita butun son beriladi.',
     output:'Ikki sonning yig‘indisini chiqaring.',

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>Mustaqil topshiriqlar · Sputnik Academy</title>
+  <link rel="stylesheet" href="Kirish.css">
+  <link rel="stylesheet" href="Oquvchi.css">
+  <link rel="stylesheet" href="Topshiriqlar.css">
+</head>
+<body class="dashboard-page assignments-page independent-page">
+  <div class="dashboard-shell">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Asosiy navigatsiya">
+      <a class="sidebar-brand" href="Oquvchi.html" aria-label="Sputnik Academy bosh sahifasi">
+        <span class="brand-symbol" aria-hidden="true">✦</span><span>Sputnik Academy</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="nav-link" href="Oquvchi.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Bosh sahifa</span></a>
+        <a class="nav-link" href="Topshiriqlar.html"><span class="nav-icon" aria-hidden="true">⌘</span><span>Amaliy topshiriqlar</span></a>
+        <a class="nav-link is-active" href="Mustaqil.html" aria-current="page"><span class="nav-icon" aria-hidden="true">▣</span><span>Mustaqil topshiriqlar</span></a>
+        <a class="nav-link" href="Oquvchi.html#activity"><span class="nav-icon" aria-hidden="true">⌁</span><span>Natijalarim</span></a>
+        <a class="nav-link" href="Profil.html"><span class="nav-icon" aria-hidden="true">⚙</span><span>Profil va sozlamalar</span></a>
+      </nav>
+      <a id="logout" class="nav-link logout-link" href="index.html"><span class="nav-icon" aria-hidden="true">↪</span><span>Chiqish</span></a>
+    </aside>
+
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Yon menyuni yopish">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="dashboard-search" type="search" placeholder="Modul, dars yoki masalani qidiring..." aria-label="Mustaqil topshiriqlarni qidirish">
+        </label>
+        <div class="header-profile">
+          <a class="notification-button" href="Bildirishnomalar.html" aria-label="Bildirishnomalarni ochish">🔔<span class="notification-count" hidden></span></a>
+          <span class="profile-avatar" id="profile-avatar" aria-hidden="true">O‘</span>
+          <span class="profile-copy"><strong id="profile-name">O‘quvchi</strong><span>Backend dasturlash · Sputnik Academy</span></span>
+        </div>
+      </header>
+
+      <main class="dashboard-main assignments-main">
+        <section class="assignment-hero">
+          <div>
+            <p class="courses-eyebrow"><span aria-hidden="true">⌂</span> SPUTNIK ACADEMY · BACKEND</p>
+            <h1>Mustaqil topshiriqlar</h1>
+            <p>Modul va darslar bo‘yicha mustaqil masalalarni tanlab, backend dasturlash bilimlaringizni mustahkamlang.</p>
+          </div>
+          <div class="assignment-overview">
+            <span>O‘quv yo‘nalishi</span><strong>Backend</strong>
+            <small>Mustaqil bajariladigan masalalar</small>
+          </div>
+        </section>
+
+        <section class="modules-section assignment-modules" aria-labelledby="modules-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">MODUL → DARS / MAVZU → MASALA</p><h2 id="modules-title">Mustaqil topshiriqlar</h2></div>
+            <p class="section-note">Modulni oching, dars yoki mavzuni tanlang va mustaqil masalani bajaring.</p>
+          </div>
+          <div class="modules" id="modules"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="Bildirishnoma xizmati.js"></script>
+  <span id="student-name" class="visually-hidden">o‘quvchi</span>
+  <dialog id="task-dialog" aria-labelledby="task-title">
+    <button id="task-close" class="dialog-close" type="button" aria-label="Yopish">×</button>
+    <span id="task-type" class="task-type"></span>
+    <h2 id="task-title"></h2>
+    <p id="task-description"></p>
+    <p class="dialog-note">Bu mustaqil topshiriqni darsdan tashqari vaqtda bajaring.</p>
+    <button id="task-dismiss" class="primary-button" type="button">Tushunarli</button>
+  </dialog>
+  <script src="Kirish.js"></script>
+  <script src="Oquvchi.js"></script>
+</body>
+</html>

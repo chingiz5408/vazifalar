@@ -3,43 +3,190 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7fb">
-  <title>Topshiriqlar · Sputnik Academy</title>
+  <meta name="theme-color" content="#F7F8FA">
+  <title>Bosh sahifa · Sputnik Academy</title>
   <link rel="stylesheet" href="Kirish.css">
+  <link rel="stylesheet" href="Oquvchi.css">
 </head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="Oquvchi.html" aria-label="Sputnik Academy o‘quvchi paneli">
-      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
-      <span>Sputnik Academy</span>
-    </a>
-    <nav class="header-actions" aria-label="O‘quvchi amallari">
-      <a class="editor-link" href="Algoritm muharriri.html">Algoritm muharriri <span aria-hidden="true">↗</span></a>
-      <a id="logout" class="register-link" href="index.html">Chiqish</a>
-    </nav>
-  </header>
+<body class="dashboard-page">
+  <div class="dashboard-shell">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Asosiy navigatsiya">
+      <a class="sidebar-brand" href="Oquvchi.html" aria-label="Sputnik Academy bosh sahifasi">
+        <span class="brand-symbol" aria-hidden="true">✦</span>
+        <span>Sputnik Academy</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="nav-link is-active" href="#dashboard" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">▦</span><span>Bosh sahifa</span>
+        </a>
+        <a class="nav-link" href="Topshiriqlar.html">
+          <span class="nav-icon" aria-hidden="true">⌘</span><span>Amaliy topshiriqlar</span>
+        </a>
+        <a class="nav-link" href="Mustaqil.html">
+          <span class="nav-icon" aria-hidden="true">▣</span><span>Mustaqil topshiriqlar</span>
+        </a>
+        <a class="nav-link" href="#activity">
+          <span class="nav-icon" aria-hidden="true">⌁</span><span>Natijalarim</span>
+        </a>
+        <a class="nav-link" href="Profil.html">
+          <span class="nav-icon" aria-hidden="true">⚙</span><span>Profil va sozlamalar</span>
+        </a>
+      </nav>
+      <a id="logout" class="nav-link logout-link" href="index.html">
+        <span class="nav-icon" aria-hidden="true">↪</span><span>Chiqish</span>
+      </a>
+    </aside>
 
-  <main>
-    <section class="welcome">
-      <p class="eyebrow">BACKEND DASTURLASH · TOPSHIRIQLAR</p>
-      <h1>Salom, <span id="student-name">o‘quvchi</span>!</h1>
-      <p class="intro">Vazifani tanlang, masalani tahlil qiling, yechimingizni dasturda bajaring va natijani tekshiring.</p>
-      <div class="course-meta"><span>4 ta yo‘nalish</span><span>·</span><span>Kod va algoritm amaliyoti</span></div>
-    </section>
-
-    <section class="modules-section" aria-labelledby="modules-title">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">SPUTNIK ACADEMY · BACKEND KURSI</p>
-          <h2 id="modules-title">Topshiriq yo‘nalishlari</h2>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Yon menyuni yopish">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="dashboard-search" type="search" placeholder="Darslar, topshiriqlar yoki mavzularni qidiring..." aria-label="Darslar va topshiriqlarni qidirish">
+        </label>
+        <div class="header-profile" id="profile">
+          <a class="notification-button" href="Bildirishnomalar.html" aria-label="Bildirishnomalarni ochish">🔔<span class="notification-count" hidden></span></a>
+          <span class="profile-avatar" id="profile-avatar" aria-hidden="true">O‘</span>
+          <span class="profile-copy"><strong id="profile-name">O‘quvchi</strong><span>Backend dasturlash · Sputnik Academy</span></span>
         </div>
-        <p class="section-note">Yo‘nalishni tanlang va amaliy vazifani bajaring.</p>
-      </div>
-      <div id="modules" class="modules"></div>
-    </section>
-  </main>
+      </header>
 
-  <footer>Sputnik Academy <span>·</span> Masalani tahlil qiling, yechimni asoslang, kodni tekshiring</footer>
+      <main class="dashboard-main" id="dashboard">
+        <section class="dashboard-intro" aria-labelledby="welcome-title">
+          <div>
+            <h1 id="welcome-title">Salom, <span id="student-name">o‘quvchi</span>! <span class="wave" aria-hidden="true">👋</span></h1>
+            <p>Bugun yangi bilimlarni o‘rganishga tayyormisiz? Kursning 3-oyi ajoyib natijalar bilan davom etmoqda!</p>
+          </div>
+          <div class="streak-pill"><span aria-hidden="true">♨</span> 12 kunlik uzluksiz o‘qish (Streak)</div>
+          <a class="current-week" href="#course"><span class="status-dot"></span><span>3-oy: Backend asoslari</span><span class="week-badge">Hafta<br><strong>11</strong></span></a>
+        </section>
+
+        <section class="stats-grid" aria-label="O‘quv natijalari">
+          <article class="stat-card">
+            <div class="stat-heading"><span>Jami darslar</span><span class="stat-icon blue">▤</span></div>
+            <p class="stat-number">48 <span>ta dars</span></p>
+            <div class="stat-foot"><span>32 tasi o‘zlashtirildi</span><strong>67%</strong></div>
+            <div class="progress-track"><span style="width:67%"></span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-heading"><span>Bajarilgan vazifalar</span><span class="stat-icon green">✓</span></div>
+            <p class="stat-number">28 <span>/ 34 ta</span></p>
+            <p class="stat-caption positive">↗ +4 ta <span>bu hafta bajarildi</span></p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-heading"><span>Kutilayotgan vazifalar</span><span class="stat-icon amber">▣</span></div>
+            <p class="stat-number">3 <span>ta topshiriq</span></p>
+            <p class="stat-caption urgent">◷ 2 tasi bugun muddati tugaydi</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat-heading"><span>O‘rtacha natija</span><span class="stat-icon violet">♜</span></div>
+            <p class="stat-number score">92% <span class="grade-pill">A’lo daraja</span></p>
+            <p class="stat-caption positive">↑ +3% <span>o‘tgan haftaga nisbatan</span></p>
+          </article>
+        </section>
+
+        <section class="course-card" id="course" aria-label="Joriy kurs">
+          <div class="course-mark" aria-hidden="true">⌘</div>
+          <div class="course-details">
+            <div class="course-kicker"><span>SPUTNIK ACADEMY</span><i>•</i> Backend dasturlash (Python, Django, SQL)</div>
+            <h2>Backend dasturchi kursi</h2>
+            <p>Umumiy muddat: 5 oy <i>|</i> Hozirda: <strong>3-oy, Django va REST API asoslari</strong> (Modul 3 / 5)</p>
+          </div>
+          <div class="course-progress">
+            <div><span>Kursning umumiy borishi</span><strong>64% yakunlandi</strong></div>
+            <div class="progress-track"><span style="width:64%"></span></div>
+            <div class="course-progress-foot"><span>Qolgan muddat: 7 hafta</span><a href="Topshiriqlar.html">Topshiriqlarni ko‘rish →</a></div>
+          </div>
+        </section>
+
+        <div class="dashboard-columns">
+          <div class="primary-column">
+            <section class="panel recommended-card" aria-labelledby="recommended-title">
+              <div class="recommend-topline"><span class="tag blue-tag">TAVSIYA ETILGAN DARS</span><span class="tag code-tag">KOD: BE-14</span><span class="lesson-duration">◴ 45 daqiqa darslik</span></div>
+              <h2 id="recommended-title">Django REST API bilan ishlash</h2>
+              <p class="lesson-description">Django REST Framework yordamida endpointlar yaratish, so‘rov ma’lumotlarini tekshirish va JSON javoblarini qaytarishni o‘rganing.</p>
+              <div class="lesson-tags">
+                <a href="Topshiriqlar.html">⌘ Amaliy topshiriq: 3 ta</a>
+                <a href="Mustaqil.html">✎ Mustaqil topshiriq: 1 ta</a>
+                <a href="#course">▤ Darslik: 142–156 betlar</a>
+              </div>
+              <div class="lesson-action">
+                <div class="video-note"><span class="play-icon" aria-hidden="true">▶</span><span><strong>14-dars: REST API amaliyoti</strong><small>Django kod muhiti biriktirilgan</small></span></div>
+                <a class="primary-button" href="Topshiriqlar.html">Topshiriqlarni boshlash <span aria-hidden="true">→</span></a>
+              </div>
+            </section>
+
+            <section class="panel activity-card" aria-labelledby="weekly-title">
+              <div class="panel-heading">
+                <div><h2 id="weekly-title">Haftalik o‘rganish faolligi</h2><p>Kundalik dars va amaliyotga ajratilgan vaqt statistikasi</p></div>
+                <span class="above-plan">Rejadan 120% ortiq</span>
+              </div>
+              <div class="weekly-chart" role="img" aria-label="Hafta davomida jami 18 soat o‘rganildi">
+                <div class="chart-caption"><strong>Hafta sarhisobi</strong><span>Maqsad: 15 soat / hafta</span></div>
+                <div class="chart-bars">
+                  <div class="chart-day"><span>2.5s</span><i style="height:55%"></i><b>Dush</b></div>
+                  <div class="chart-day"><span>3.0s</span><i style="height:66%"></i><b>Sesh</b></div>
+                  <div class="chart-day"><span>1.5s</span><i style="height:33%"></i><b>Chor</b></div>
+                  <div class="chart-day today"><span>4.0s</span><i style="height:88%"></i><b>Pay</b></div>
+                  <div class="chart-day"><span>2.5s</span><i style="height:55%"></i><b>Jum</b></div>
+                  <div class="chart-day"><span>3.5s</span><i style="height:77%"></i><b>Shan</b></div>
+                  <div class="chart-day"><span>1.0s</span><i style="height:22%"></i><b>Yak</b></div>
+                </div>
+              </div>
+              <div class="weekly-summary"><span>✓ <strong>Bu hafta jami: 18 soat o‘rganildi</strong></span><span>Kunlik o‘rtacha: 2.57 soat</span></div>
+            </section>
+
+            <section class="panel recent-card" id="activity" aria-labelledby="recent-title">
+              <div class="panel-heading"><h2 id="recent-title">So‘nggi faoliyatlar</h2><a href="#activity">Barchasini ko‘rish</a></div>
+              <div class="activity-list">
+                <article class="activity-item featured-activity">
+                  <span class="activity-icon mint">☆</span>
+                  <div class="activity-copy"><div><strong>CSS Flexbox va Grid amaliyoti</strong><small>2 soat oldin</small></div><p><span class="passed-tag">Baho: 98 / 100</span><span class="passed-tag">Topshirildi</span></p><blockquote><strong>O‘qituvchi izohi:</strong> "Juda toza kod! Responsive holatlari mukammal yechilgan, ayniqsa mobile breakpointlar to‘g‘ri hisoblangan."</blockquote></div>
+                </article>
+                <article class="activity-item">
+                  <span class="activity-icon lavender">☑</span>
+                  <div class="activity-copy"><div><strong>JavaScript o‘zgaruvchilar va tiplar testi</strong><small>Kecha, 19:40</small></div><p><span class="passed-tag">100% natija (15 / 15 to‘g‘ri)</span><span class="activity-muted">Vaqt: 8 daqiqa</span></p></div>
+                </article>
+                <article class="activity-item">
+                  <span class="activity-icon pale-blue">✓</span>
+                  <div class="activity-copy"><div><strong>HTML5 Semantik teglar mustaqil ishi</strong><small>2 kun oldin</small></div><p><span class="neutral-tag">Qabul qilindi va arxivlandi</span></p></div>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <aside class="secondary-column" aria-label="Qo‘shimcha ma’lumotlar">
+            <section class="panel deadlines-card" id="deadlines">
+              <div class="panel-heading"><h2><span class="red-icon">⌛</span> Muddatlar</h2><span class="small-count">3 ta faol</span></div>
+              <article class="deadline-item deadline-urgent"><div><span class="deadline-label">SHOSHILINCH</span><span class="deadline-time">◷ 6 soat qoldi</span></div><h3>Mustaqil vazifa #12: Interaktiv forma validatsiyasi</h3><p>Muddati: <strong>Bugun, 23:59</strong><a href="Mustaqil.html">Vazifani ko‘rish →</a></p></article>
+              <article class="deadline-item"><div><span class="deadline-label">MODULLI TEST</span><span class="deadline-time">2 kun qoldi</span></div><h3>Test: JavaScript funksiyalar va massivlar</h3><p>Muddati: 22-oktabr, 18:00 <a href="Topshiriqlar.html">Tayyorgarlik</a></p></article>
+              <article class="deadline-item"><div><span class="deadline-label">KATTA LOYIHA</span><span class="deadline-time">5 kun qoldi</span></div><h3>Amaliy loyiha: Mini To-Do ilovasi</h3><p>Muddati: 25-oktabr <a href="Topshiriqlar.html">Qoidalar</a></p></article>
+            </section>
+
+            <section class="panel resource-card">
+              <div class="resource-heading"><span class="resource-icon">▤</span><div><small>TAVSIYA ETILGAN QO‘LLANMA</small><h2>5-oylik Frontend o‘quv kitobi</h2></div></div>
+              <div class="resource-note"><div><strong>Bugungi mavzu</strong><span>142-sahifa</span></div><p>4-bob: «DOM daraxti arxitekturasi va hodisalar oqimi (Event Bubbling)»</p></div>
+              <div class="consultation"><strong>♧ &nbsp; Jonli konsultatsiya</strong><span>Payshanba, soat 16:00 da o‘qituvchi bilan savol-javob</span></div>
+              <a class="download-link" href="#course">⇩ &nbsp; Kitobni yuklab olish (PDF)</a>
+            </section>
+
+            <section class="panel mentor-card">
+              <div class="panel-heading"><h2>Mentor yordami</h2><span class="online-status">● &nbsp; Onlayn</span></div>
+              <div class="mentor-profile"><span class="mentor-avatar" aria-hidden="true">JA</span><div><strong>Javohir Alimov</strong><span>Katta Frontend Dasturchi</span><small>Javob berish vaqti: ~15 daqiqa</small></div></div>
+              <div class="mentor-actions"><a href="mailto:mentor@bilimlab.uz">▣ &nbsp; Savol yo‘llash</a><a href="#course">▢ &nbsp; 1-ga-1 uchrashuv</a></div>
+            </section>
+
+            <section class="rank-card">
+              <span class="rank-icon">♙</span><div><small>OYLIK REYTING</small><h2>Guruhda 3-o‘rin</h2><p>Yetakchilik uchun yana 45 ball kerak!</p></div>
+            </section>
+          </aside>
+        </div>
+
+      </main>
+    </div>
+  </div>
 
   <dialog id="task-dialog" aria-labelledby="task-title">
     <button id="task-close" class="dialog-close" type="button" aria-label="Yopish">×</button>
@@ -50,7 +197,7 @@
     <button id="task-dismiss" class="primary-button" type="button">Tushunarli</button>
   </dialog>
 
-  <script src="Kirish.js"></script>
+  <script src="Bildirishnoma xizmati.js"></script>
   <script src="Oquvchi.js"></script>
 </body>
 </html>

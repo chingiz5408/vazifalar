@@ -97,7 +97,7 @@ const modulesRoot=document.getElementById('modules');
 const taskDialog=document.getElementById('task-dialog');
 
 function showTask(task){
-  document.getElementById('task-type').textContent=task.type;
+  document.getElementById('task-type').textContent=document.body.classList.contains('independent-page')?`Mustaqil topshiriq · ${task.type}`:task.type;
   document.getElementById('task-title').textContent=task.title;
   document.getElementById('task-description').textContent=task.description;
   taskDialog.showModal();
@@ -127,7 +127,7 @@ modules.forEach((module,moduleIndex)=>{
     const toggle=document.createElement('button');toggle.type='button';toggle.className='topic-toggle';toggle.setAttribute('aria-expanded','false');
     const topicNumber=document.createElement('span');topicNumber.className='topic-index';topicNumber.textContent=`${String(moduleIndex+1).padStart(2,'0')}.${String(topicIndex+1).padStart(2,'0')}`;
     const topicName=document.createElement('span');topicName.className='topic-name';topicName.textContent=topic.title;
-    const count=document.createElement('span');count.className='topic-count';count.textContent=`${topic.tasks.length} topshiriq`;
+    const count=document.createElement('span');count.className='topic-count';count.textContent=`${topic.tasks.length} ta masala`;
     const chevron=document.createElement('span');chevron.className='topic-chevron';chevron.setAttribute('aria-hidden','true');chevron.textContent='⌄';
     const tasks=document.createElement('div');tasks.className='tasks';tasks.hidden=true;
     const tasksId=`tasks-${moduleIndex}-${topicIndex}`;tasks.id=tasksId;toggle.setAttribute('aria-controls',tasksId);
@@ -143,7 +143,7 @@ modules.forEach((module,moduleIndex)=>{
       const icon=document.createElement('span');icon.className='task-icon';icon.setAttribute('aria-hidden','true');icon.textContent=task.ordering?'↕':task.answerForm?'✎':task.test?'✓':task.codeTask?'{}':task.algorithm?'↗':'•';
       const taskText=document.createElement('span');taskText.className='task-text';
       const taskTitle=document.createElement('span');taskTitle.className='task-title';taskTitle.textContent=task.title;
-      const kind=document.createElement('span');kind.className='task-kind';kind.textContent=task.type;
+      const kind=document.createElement('span');kind.className='task-kind';kind.textContent=document.body.classList.contains('independent-page')?`Mustaqil topshiriq · ${task.type}`:task.type;
       taskText.append(taskTitle,kind);taskButton.append(icon,taskText);
       taskButton.addEventListener('click',()=>{
         if(task.ordering){window.location.href=`Ketma-ketlik muharriri.html?task=${encodeURIComponent(task.ordering)}`}

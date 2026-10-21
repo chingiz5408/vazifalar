@@ -1,10 +1,10 @@
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
---bg:#f5f6f8;--panel:#fff;--text:#1d2330;--muted:#6b7385;--line:#d9dde5;--grid:#e3e6ec;--edge:#3b4252;--accent:#2563eb;
+--bg:#F7F8FA;--panel:#fff;--text:#1F2937;--muted:#64748B;--line:#E4E9F0;--grid:#e3e6ec;--edge:#3b4252;--primary:#17365D;--primary-hover:#102945;--accent:#2F5D8A;
 --c-start:#d6f5e0;--c-io:#dbe8ff;--c-calc:#fdf0cc;--c-cond:#ecdcff;--c-end:#fcd9d9;--stroke:#4b5563}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
---bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#6b9bff;
+--bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#2F5D8A;
 --c-start:#1f4a31;--c-io:#1f3a66;--c-calc:#5a4713;--c-cond:#47296b;--c-end:#5e2626;--stroke:#8a93a6}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#6b9bff;
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#2F5D8A;
 --c-start:#1f4a31;--c-io:#1f3a66;--c-calc:#5a4713;--c-cond:#47296b;--c-end:#5e2626;--stroke:#8a93a6}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}

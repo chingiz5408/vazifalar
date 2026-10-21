@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>Profil va sozlamalar · Sputnik Academy</title>
+  <link rel="stylesheet" href="Kirish.css">
+  <link rel="stylesheet" href="Oquvchi.css">
+  <link rel="stylesheet" href="Profil.css">
+</head>
+<body class="dashboard-page profile-page">
+  <div class="dashboard-shell">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Asosiy navigatsiya">
+      <a class="sidebar-brand" href="Oquvchi.html" aria-label="Sputnik Academy bosh sahifasi">
+        <span class="brand-symbol" aria-hidden="true">✦</span><span>Sputnik Academy</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="nav-link" href="Oquvchi.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Bosh sahifa</span></a>
+        <a class="nav-link" href="Topshiriqlar.html"><span class="nav-icon" aria-hidden="true">⌘</span><span>Amaliy topshiriqlar</span></a>
+        <a class="nav-link" href="Mustaqil.html"><span class="nav-icon" aria-hidden="true">▣</span><span>Mustaqil topshiriqlar</span></a>
+        <a class="nav-link" href="Oquvchi.html#activity"><span class="nav-icon" aria-hidden="true">⌁</span><span>Natijalarim</span></a>
+        <a class="nav-link is-active" href="Profil.html" aria-current="page"><span class="nav-icon" aria-hidden="true">⚙</span><span>Profil va sozlamalar</span></a>
+      </nav>
+      <a id="logout" class="nav-link logout-link" href="index.html"><span class="nav-icon" aria-hidden="true">↪</span><span>Chiqish</span></a>
+    </aside>
+
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Yon menyuni yopish">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <div class="profile-header-title">
+          <span>Sputnik Academy</span><span aria-hidden="true">/</span><strong>Profil va sozlamalar</strong>
+        </div>
+        <a class="notification-button profile-notifications-link" href="Bildirishnomalar.html" aria-label="Bildirishnomalarni ochish">🔔<span class="notification-count" hidden></span></a>
+        <a class="profile-home-link" href="Oquvchi.html">Bosh sahifa <span aria-hidden="true">→</span></a>
+      </header>
+
+      <main class="dashboard-main profile-main">
+        <section class="profile-intro" aria-labelledby="profile-title">
+          <p class="profile-eyebrow">HISOBINGIZ</p>
+          <h1 id="profile-title">Profil va sozlamalar</h1>
+          <p>Shaxsiy ma’lumotlaringiz va bildirishnoma sozlamalarini boshqaring.</p>
+        </section>
+
+        <section class="profile-summary" aria-label="Profil haqida qisqacha">
+          <span id="profile-avatar" class="profile-summary-avatar" aria-hidden="true">O‘</span>
+          <div class="profile-summary-copy">
+            <strong id="profile-display-name">O‘quvchi</strong>
+            <span id="profile-summary-email">Elektron pochta</span>
+          </div>
+          <span class="profile-role"><span aria-hidden="true">●</span> O‘quvchi</span>
+        </section>
+
+        <div class="profile-settings-grid">
+          <section class="profile-card" aria-labelledby="personal-title">
+            <div class="profile-card-heading">
+              <span class="profile-card-icon" aria-hidden="true">♙</span>
+              <div><h2 id="personal-title">Shaxsiy ma’lumotlar</h2><p>Profilingizda ko‘rinadigan ismni tahrirlang.</p></div>
+            </div>
+            <form id="profile-form" class="profile-form">
+              <label for="display-name">Ism</label>
+              <input id="display-name" name="display-name" type="text" autocomplete="name" maxlength="60" required>
+
+              <label for="email">Elektron pochta</label>
+              <input id="email" name="email" type="email" autocomplete="email" readonly>
+              <p class="field-hint">Elektron pochta manzili hozircha o‘zgartirilmaydi.</p>
+
+              <div class="profile-form-actions">
+                <p id="profile-status" class="profile-status" role="status" aria-live="polite"></p>
+                <button class="profile-save-button" type="submit">O‘zgarishlarni saqlash</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="profile-card notification-card" aria-labelledby="notifications-title">
+            <div class="profile-card-heading">
+              <span class="profile-card-icon" aria-hidden="true">♧</span>
+              <div><h2 id="notifications-title">Bildirishnomalar</h2><p>Qaysi eslatmalarni ko‘rishni tanlang.</p></div>
+            </div>
+            <label class="setting-option" for="task-reminders">
+              <span><strong>Topshiriq eslatmalari</strong><small>Muddati yaqin topshiriqlar haqida eslatma.</small></span>
+              <input id="task-reminders" type="checkbox">
+            </label>
+            <label class="setting-option" for="course-updates">
+              <span><strong>Kurs yangiliklari</strong><small>Yangi mavzu va o‘quv materiallari haqida.</small></span>
+              <input id="course-updates" type="checkbox">
+            </label>
+            <p id="notification-status" class="notification-status" role="status" aria-live="polite"></p>
+          </section>
+        </div>
+
+        <section class="profile-card account-card" aria-labelledby="account-title">
+          <div class="profile-card-heading">
+            <span class="profile-card-icon" aria-hidden="true">⌑</span>
+            <div><h2 id="account-title">Hisob</h2><p>Ushbu qurilmadagi joriy hisobdan chiqish.</p></div>
+          </div>
+          <a id="logout-action" class="profile-logout-button" href="index.html">Hisobdan chiqish <span aria-hidden="true">→</span></a>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="Bildirishnoma xizmati.js"></script>
+  <script src="Profil.js"></script>
+</body>
+</html>

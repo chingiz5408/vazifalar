@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>Bildirishnomalar · Sputnik Academy</title>
+  <link rel="stylesheet" href="Kirish.css">
+  <link rel="stylesheet" href="Oquvchi.css">
+  <link rel="stylesheet" href="Bildirishnomalar.css">
+</head>
+<body class="dashboard-page notifications-page">
+  <div class="dashboard-shell">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Asosiy navigatsiya">
+      <a class="sidebar-brand" href="Oquvchi.html" aria-label="Sputnik Academy bosh sahifasi">
+        <span class="brand-symbol" aria-hidden="true">✦</span><span>Sputnik Academy</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="nav-link" href="Oquvchi.html"><span class="nav-icon" aria-hidden="true">▦</span><span>Bosh sahifa</span></a>
+        <a class="nav-link" href="Topshiriqlar.html"><span class="nav-icon" aria-hidden="true">⌘</span><span>Amaliy topshiriqlar</span></a>
+        <a class="nav-link" href="Mustaqil.html"><span class="nav-icon" aria-hidden="true">▣</span><span>Mustaqil topshiriqlar</span></a>
+        <a class="nav-link" href="Oquvchi.html#activity"><span class="nav-icon" aria-hidden="true">⌁</span><span>Natijalarim</span></a>
+        <a class="nav-link" href="Profil.html"><span class="nav-icon" aria-hidden="true">⚙</span><span>Profil va sozlamalar</span></a>
+      </nav>
+      <a id="logout" class="nav-link logout-link" href="index.html"><span class="nav-icon" aria-hidden="true">↪</span><span>Chiqish</span></a>
+    </aside>
+
+    <div class="dashboard-content">
+      <header class="dashboard-header notifications-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Yon menyuni yopish">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <div class="notifications-breadcrumb"><span>Sputnik Academy</span><span aria-hidden="true">/</span><strong>Bildirishnomalar</strong></div>
+        <a class="notification-button notifications-current-link" href="Bildirishnomalar.html" aria-label="Bildirishnomalar">🔔<span class="notification-count" hidden></span></a>
+        <a class="notifications-home-link" href="Oquvchi.html">Bosh sahifa <span aria-hidden="true">→</span></a>
+      </header>
+
+      <main class="dashboard-main notifications-main">
+        <section class="notifications-intro" aria-labelledby="notifications-title">
+          <p class="notifications-eyebrow">YANGILIKLAR VA ESLATMALAR</p>
+          <div class="notifications-title-row">
+            <div>
+              <h1 id="notifications-title">Bildirishnomalar</h1>
+              <p>Topshiriqlar va kurs yangiliklarini shu yerda kuzatib boring.</p>
+            </div>
+            <button id="mark-all-read" class="mark-all-button" type="button">Barchasini o‘qilgan deb belgilash</button>
+          </div>
+        </section>
+
+        <p class="notifications-demo-note"><span aria-hidden="true">i</span> Backend ulanmaguncha bu sahifada namunaviy bildirishnomalar ko‘rsatiladi. O‘qilgan holati ushbu brauzerda saqlanadi.</p>
+
+        <section class="notifications-panel" aria-label="Bildirishnomalar ro‘yxati">
+          <div class="notifications-toolbar">
+            <div class="notification-filters" role="group" aria-label="Bildirishnomalarni filtrlash">
+              <button class="notification-filter is-selected" type="button" data-filter="all" aria-pressed="true">Barchasi <span id="all-count">0</span></button>
+              <button class="notification-filter" type="button" data-filter="unread" aria-pressed="false">O‘qilmagan <span id="unread-count">0</span></button>
+            </div>
+            <p id="notification-summary" class="notification-summary" aria-live="polite"></p>
+          </div>
+          <div id="notification-list" class="notification-list" aria-live="polite"></div>
+          <div id="notification-empty" class="notification-empty" hidden>
+            <span class="notification-empty-icon" aria-hidden="true">♧</span>
+            <h2 id="notification-empty-title">Hozircha bildirishnoma yo‘q</h2>
+            <p id="notification-empty-copy">Yangi yangiliklar shu yerda ko‘rinadi.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="Bildirishnoma xizmati.js"></script>
+  <script src="Bildirishnomalar.js"></script>
+</body>
+</html>
