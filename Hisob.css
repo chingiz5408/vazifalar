@@ -1,7 +1,7 @@
 :root{color-scheme:light;--bg:#F7F8FA;--panel:#fff;--text:#1F2937;--muted:#64748B;--line:#E4E9F0;--primary:#17365D;--primary-hover:#102945;--accent:#2F5D8A;--accent-soft:#EAF1F8}
 *{box-sizing:border-box}
 body{min-height:100vh;margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
-.login-page{position:relative;isolation:isolate;overflow-x:hidden;background:radial-gradient(ellipse at 82% 24%,#EAF1F8 0,transparent 38%),radial-gradient(ellipse at 12% 82%,#EAF1F8 0,transparent 36%),#F7F8FA}
+.login-page{position:relative;isolation:isolate;overflow-x:hidden;background:linear-gradient(#F7F8FAde,#F7F8FAde),url("bg_pattern.jpg") center/cover fixed no-repeat}
 a{color:inherit;text-decoration:none}
 .topbar{height:68px;padding:0 max(24px,calc((100vw - 1120px)/2));display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:1px solid var(--line)}
 .login-page .topbar{position:relative;background:#ffffffa8;border-bottom-color:#dce7fa80;backdrop-filter:blur(12px)}
