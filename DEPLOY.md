@@ -81,8 +81,10 @@ nano .env
 ```dotenv
 DEBUG=false
 
-# Xavfsiz kalit yaratamiz:
-SECRET_KEY=SHU_YERNI_YANGI_KALIT_BILAN_ALMASHTIRING
+# Xavfsiz kalit yaratamiz.
+# DIQQAT: kalitni HAR DOIM qo'shtirnoq ichida yozing — undagi maxsus
+# belgilar (!@#$%^&*) systemd tomonida noto'g'ri o'qilishi mumkin.
+SECRET_KEY="SHU_YERNI_YANGI_KALIT_BILAN_ALMASHTIRING"
 
 # Aniq domeningiz ( "*" taqiqlanadi! )
 ALLOWED_HOSTS=sputnik.uz,www.sputnik.uz
