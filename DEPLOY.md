@@ -81,9 +81,13 @@ nano .env
 ```dotenv
 DEBUG=false
 
-# Xavfsiz kalit yaratamiz.
-# DIQQAT: kalitni HAR DOIM qo'shtirnoq ichida yozing — undagi maxsus
-# belgilar (!@#$%^&*) systemd tomonida noto'g'ri o'qilishi mumkin.
+# Xavfsiz kalit yaratamiz (faqat harf/raqam/-/_ bo'ladi):
+#   python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+#
+# DIQQAT: Django'ning get_random_secret_key() funksiyasini ISHLATMANG —
+# u !@#$%^* belgilarini beradi, systemd esa EnvironmentFile da
+# $ va % ni kengaytirib yuboradi (kalit buziladi). token_urlsafe esa
+# faqat A-Za-z0-9-_ beradi — hamma joyda bir xil o'qiladi.
 SECRET_KEY="SHU_YERNI_YANGI_KALIT_BILAN_ALMASHTIRING"
 
 # Aniq domeningiz ( "*" taqiqlanadi! )
@@ -100,7 +104,7 @@ LOG_LEVEL=INFO
 Kalit yaratish:
 
 ```bash
-./venv/bin/python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+./venv/bin/python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
 > ⚠️ `DEBUG=false` bo'lsa, `SECRET_KEY` `django-insecure-` bilan boshlansa yoki

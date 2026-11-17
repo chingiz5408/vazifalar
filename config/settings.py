@@ -52,13 +52,22 @@ if not DEBUG:
     if not SECRET_KEY or SECRET_KEY.startswith("django-insecure-"):
         raise ImproperlyConfigured(
             "SECRET_KEY .env faylida xavfsiz qiymatga o'zgartirilishi kerak. "
-            "Yaratish: python -c \"from django.core.management.utils import "
-            "get_random_secret_key; print(get_random_secret_key())\""
+            "Yaratish: python -c \"import secrets; print(secrets.token_urlsafe(50))\""
+        )
+    # systemd EnvironmentFile .env dan o'qiydi va u yerda $ va % belgilari
+    # kengaytiriladi ($ht3f -> bo'sh satr, "%%" -> "%"). Bunday kalit
+    # python-da va systemd da BOSHQA ko'rinishda o'qiladi — sezgir xato.
+    # Shuning uchun faqat A-Za-z0-9-_ ruxsat etiladi.
+    if any(ch in SECRET_KEY for ch in "$%"):
+        raise ImproperlyConfigured(
+            "SECRET_KEY da '$' yoki '%' belgisi bor. systemd uni buzib yuboradi. "
+            "Almashtiring: python -c \"import secrets; "
+            "print(secrets.token_urlsafe(50))\""
         )
     if not ALLOWED_HOSTS or ALLOWED_HOSTS == ["*"]:
         raise ImproperlyConfigured(
-            "ALLOWED_HOSTS .env faylida aniq domen bilan to'ldirilishi kerak. "
-            "Masalan: ALLOWED_HOSTS=sputnik.uz,www.sputnik.uz"
+            "ALLOWED_HOSTS .env faylida aniq domen yoki IP bilan to'ldirilishi kerak. "
+            "Masalan: ALLOWED_HOSTS=sputnik.uz yoki ALLOWED_HOSTS=185.139.138.150"
         )
 
 
