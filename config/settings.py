@@ -163,6 +163,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Loyiha darajasidagi umumiy statik fayllar (app fayllari main/static/ ichida).
+# Papka bo'sh bo'lsa ham git'da saqlanishi uchun .gitkeep fayli bor —
+# aks holda yangi klonda "staticfiles.W004" ogohlantirishi chiqadi.
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
