@@ -16,7 +16,10 @@ Description=Sputnik Academy — Django (gunicorn)
 After=network.target
 
 [Service]
-Type=notify
+# Type=simple: gunicorn systemd'ga "tayyor" bildirishini (sd_notify)
+# yubormaydi — notify ishlatilsa, systemd TimeoutStartSec (90s) kutib
+# xizmatni o'ldiradi. simple esa darhol ishlaydi.
+Type=simple
 User=admin
 Group=admin
 WorkingDirectory=/home/admin/loyha
