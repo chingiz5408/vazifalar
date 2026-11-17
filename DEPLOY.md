@@ -46,15 +46,17 @@ ufw enable
 
 ## 2. Kodni olish
 
+> **Eslatma:** bu qo'llanma `admin` foydalanuvchisi va `/home/admin/loyha`
+> yo'li uchun yozilgan. Boshqa ism/yo'l ishlatsangiz — `deploy/*.service`
+> fayllaridagi `User=` va `WorkingDirectory=` qiymatlarini ham o'zgartiring.
+
 ```bash
-# Foydalanuvchi yaratamiz (ismi bo'yicha yo'l: /home/sputnik/loyha)
-adduser sputnik
-usermod -aG docker sputnik      # Docker ishlatish uchun
-usermod -aG www-data sputnik    # nginx static fayllarni o'qiydi
+# Docker guruhiga qo'shamiz (kod bajaruvchi servisi uchun zarur)
+sudo usermod -aG docker admin
 
 # Kodni ko'chiramiz
-cd /home/sputnik
-git clone https://github.com/<sizning-reponingiz>.git loyha
+cd /home/admin
+git clone https://github.com/chingiz5408/vazifalar.git loyha
 cd loyha
 
 # Virtual muhit
@@ -71,7 +73,7 @@ Serverda `venv/` yangidan yaratiladi.
 ## 3. `.env` sozlash
 
 ```bash
-cd /home/sputnik/loyha
+cd /home/admin/loyha
 cp .env.example .env
 nano .env
 ```
@@ -90,8 +92,10 @@ DEBUG=false
 # faqat A-Za-z0-9-_ beradi — hamma joyda bir xil o'qiladi.
 SECRET_KEY="SHU_YERNI_YANGI_KALIT_BILAN_ALMASHTIRING"
 
-# Aniq domeningiz ( "*" taqiqlanadi! )
-ALLOWED_HOSTS=sputnik.uz,www.sputnik.uz
+# Aniq domeningiz ( "*" taqiqlanadi! ).
+# Domen yo'q bo'lsa — server IP manzili:
+ALLOWED_HOSTS=185.139.138.150
+# Domen olgandan keyin: ALLOWED_HOSTS=sputnik.uz,www.sputnik.uz
 
 # Avval false qoldiring (7-bosqichdan keyin true qiling)
 SECURE_SSL=false
@@ -116,7 +120,7 @@ Kalit yaratish:
 ## 4. Migratsiya + static
 
 ```bash
-cd /home/sputnik/loyha
+cd /home/admin/loyha
 
 # Baza yaratiladi (SQLite — qo'shimcha o'rnatish kerak emas)
 ./venv/bin/python manage.py migrate
@@ -136,7 +140,7 @@ cd /home/sputnik/loyha
 bajaradi. Avval rasm (image) quramiz:
 
 ```bash
-docker build -t sputnik-python:3.12 /home/sputnik/loyha/code_runner
+docker build -t sputnik-python:3.12 /home/admin/loyha/code_runner
 docker images | grep sputnik     # rasm yaratilganini tekshiramiz
 ```
 
@@ -155,7 +159,7 @@ docker run --rm --network none --memory=128m sputnik-python:3.12 python -c "prin
 Ikki xizmatni avtomatik boshlaymiz: **Django** va **kod bajaruvchi**.
 
 ```bash
-cd /home/sputnik/loyha
+cd /home/admin/loyha
 
 # 6.1 Django (gunicorn)
 sudo cp deploy/sputnik-django.service /etc/systemd/system/
@@ -212,8 +216,8 @@ sudo cp deploy/nginx.conf /etc/nginx/sites-available/sputnik
 
 # Yo'llarni o'zingizning loyiha manzilingizga moslang (3 ta joy):
 sudo nano /etc/nginx/sites-available/sputnik
-#   alias /home/sputnik/loyha/staticfiles/;
-#   alias /home/sputnik/loyha/media/;
+#   alias /home/admin/loyha/staticfiles/;
+#   alias /home/admin/loyha/media/;
 #   server_name sputnik.uz www.sputnik.uz;
 
 sudo ln -sf /etc/nginx/sites-available/sputnik /etc/nginx/sites-enabled/
@@ -234,7 +238,7 @@ Certbot o'zi `server_name` ni to'g'rilaydi va `redirect` qo'shadi.
 **Keyin** Django'da SSL'ni yoqamiz:
 
 ```bash
-cd /home/sputnik/loyha
+cd /home/admin/loyha
 nano .env
 # SECURE_SSL=false  ->  SECURE_SSL=true
 sudo systemctl restart sputnik-django
@@ -267,7 +271,7 @@ journalctl -u sputnik-django -n 100 --no-pager
 ## 🔄 Yangilanish (kod o'zgarganda)
 
 ```bash
-cd /home/sputnik/loyha
+cd /home/admin/loyha
 git pull
 ./venv/bin/pip install -r requirements.txt
 ./venv/bin/python manage.py migrate
@@ -285,16 +289,16 @@ Uni muntazam nusxalash shart:
 
 ```bash
 # Qo'lda
-cp /home/sputnik/loyha/db.sqlite3 /backup/db-$(date +%F).sqlite3
+cp /home/admin/loyha/db.sqlite3 /backup/db-$(date +%F).sqlite3
 
 # Cron — har kuni 03:00 da (crontab -e)
-0 3 * * * cp /home/sputnik/loyha/db.sqlite3 /backup/db-$(date +\%F).sqlite3
+0 3 * * * cp /home/admin/loyha/db.sqlite3 /backup/db-$(date +\%F).sqlite3
 ```
 
 **Muhim:** `media/` papkasi (yuklangan PDF, preview) ham backup'ga kiradi:
 
 ```bash
-cp -r /home/sputnik/loyha/media /backup/media-$(date +%F)
+cp -r /home/admin/loyha/media /backup/media-$(date +%F)
 ```
 
 ---
@@ -310,14 +314,14 @@ cp -r /home/sputnik/loyha/media /backup/media-$(date +%F)
 | **Static topilmadi (404)** | `collectstatic` bajarilmagan | `./venv/bin/python manage.py collectstatic --noinput` |
 | **Media topilmadi (404)** | nginx `alias` yo'li noto'g'ri | `nginx.conf` dagi `alias` ni tekshiring |
 | **SECRET_KEY xatosi** | `.env` da kalit `django-insecure-` bilan | Yangi kalit yarating (3-bosqich) |
-| **Docker ruxsati yo'q** | foydalanuvchi docker guruhida emas | `usermod -aG docker sputnik` → qayta login |
+| **Docker ruxsati yo'q** | foydalanuvchi docker guruhida emas | `sudo usermod -aG docker admin` → `sudo systemctl restart sputnik-queue` |
 
 ---
 
 ## 📁 Serverdagi tuzilish
 
 ```
-/home/sputnik/loyha/
+/home/admin/loyha/
 ├── venv/                  ← virtual muhit (serverda yaratiladi)
 ├── .env                   ← sozlamalar (git'ga TUSHMAYDI)
 ├── db.sqlite3             ← baza (git'ga TUSHMAYDI)

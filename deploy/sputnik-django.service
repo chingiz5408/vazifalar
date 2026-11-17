@@ -6,6 +6,9 @@
 #   sudo systemctl enable --now sputnik-django
 #   sudo systemctl status sputnik-django
 #   journalctl -u sputnik-django -f
+#
+# Eslatma: User/yo'llar shu server uchun (/home/admin/loyha).
+# Boshqa foydalanuvchi yoki yo'l ishlatsangiz — o'zgartiring.
 # ==========================================================================
 
 [Unit]
@@ -14,12 +17,12 @@ After=network.target
 
 [Service]
 Type=notify
-User=sputnik
-Group=www-data
-WorkingDirectory=/home/sputnik/loyha
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/loyha
 # .env faylidan SECRET_KEY, DEBUG, ALLOWED_HOSTS, SECURE_SSL o'qiladi
-EnvironmentFile=/home/sputnik/loyha/.env
-ExecStart=/home/sputnik/loyha/venv/bin/gunicorn --config gunicorn.conf.py config.wsgi:application
+EnvironmentFile=/home/admin/loyha/.env
+ExecStart=/home/admin/loyha/venv/bin/gunicorn --config gunicorn.conf.py config.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5
@@ -27,11 +30,11 @@ KillSignal=SIGQUIT
 TimeoutStopSec=30
 
 # --- Xavfsizlik cheklovlari ---
+# Loyiha /home/admin ichida joylashgani uchun ProtectHome YOQILMAYDI
+# (aks holda kod, .env va baza o'qilmaydi).
 PrivateTmp=true
 NoNewPrivileges=true
 ProtectSystem=full
-ProtectHome=true
-ReadWritePaths=/home/sputnik/loyha/media /home/sputnik/loyha/db.sqlite3
 
 [Install]
 WantedBy=multi-user.target

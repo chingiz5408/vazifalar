@@ -1,3 +1,17 @@
+# ==========================================================================
+# systemd — Sputnik Academy kod bajaruvchi servis (code_runner/queue_server.py)
+# Joy: /etc/systemd/system/sputnik-queue.service
+#
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now sputnik-queue
+#   sudo systemctl status sputnik-queue
+#   journalctl -u sputnik-queue -f
+#
+# MUHIM:
+#   1) usermod -aG docker admin   (docker guruhiga qo'shish)
+#   2) Docker image qurilgan bo'lishi kerak:
+#      docker build -t sputnik-python:3.12 /home/admin/loyha/code_runner
+# ==========================================================================
 
 [Unit]
 Description=Sputnik Academy — kod bajaruvchi servis (queue_server)
@@ -6,19 +20,22 @@ Requires=docker.service
 
 [Service]
 Type=simple
-User=sputnik
-Group=sputnik
-# pool.py, worker.py importlari uchun shu papka ish katalogi bo'lishi shart
-WorkingDirectory=/home/sputnik/loyha/code_runner
+User=admin
+Group=admin
+# pool.py dagi "from pool import ..." importlari uchun shu papka
+# ish katalogi bo'lishi shart — aks holda xato beradi.
+WorkingDirectory=/home/admin/loyha/code_runner
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/sputnik/loyha/venv/bin/python -u queue_server.py
+# docker.sock ga kirish uchun qo'shimcha guruh
+SupplementaryGroups=docker
+ExecStart=/home/admin/loyha/venv/bin/python -u queue_server.py
 Restart=always
 RestartSec=5
 
-# --- Xavfsizlik cheklovlari ---
-# Docker CLI ishlatilgani uchun keng ruxsat kerak (docker.sock ga yozish).
+# --- Xavfsizlik ---
+# NoNewPrivileges YOQILMAYDI: Docker CLI konteyner boshqarishi uchun
+# imtiyozlar kerak.
 PrivateTmp=true
-NoNewPrivileges=false
 
 [Install]
 WantedBy=multi-user.target
