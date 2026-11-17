@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Amaliy topshiriqlar{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'main/Kirish.css' %}">
+  <link rel="stylesheet" href="{% static 'main/Oquvchi.css' %}">
+  <link rel="stylesheet" href="{% static 'main/Topshiriqlar.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-main assignments-main">
+  <!-- Sarlavha va Umumiy Natija -->
+  <section class="assignment-hero">
+    <div>
+      <p class="courses-eyebrow">SPUTNIK ACADEMY · O‘QUV REJASI</p>
+      <h1>Amaliy topshiriqlar</h1>
+      <p>Modullar va mavzular bo‘yicha dasturlash masalalari hamda test sinovlari ro‘yxati.</p>
+      
+      <!-- Rasmiy holat xulosasi -->
+      <div class="academic-summary-bar">
+        <span class="academic-stat-item stat-green">Bajarilgan: {{ passed_count }} ta</span>
+        {% if failed_count > 0 %}
+          <span class="academic-stat-item stat-red">Qanoatsiz: {{ failed_count }} ta</span>
+        {% endif %}
+        <span class="academic-stat-item stat-amber">Topshirilmagan: {{ pending_count }} ta</span>
+      </div>
+    </div>
+
+    <div class="assignment-overview">
+      <span>Umumiy natija</span>
+      <strong>{{ overall_percent }}%</strong>
+      <small>Jami topshiriqlar: {{ total_tasks }} ta</small>
+    </div>
+  </section>
+
+  <!-- Boshqaruv paneli (Mavzularni ochish/yopish va qidirish) -->
+  <div class="academic-controls-bar">
+    <div class="quick-filter-wrap">
+      <input type="text" id="topic-search-input" placeholder="Mavzular yoki topshiriqlarni qidirish..." aria-label="Qidirish">
+    </div>
+    <div class="expand-collapse-actions">
+      <button type="button" id="btn-expand-all" class="academic-secondary-btn">Barchasini ochish</button>
+      <button type="button" id="btn-collapse-all" class="academic-secondary-btn">Barchasini yopish</button>
+    </div>
+  </div>
+
+  <!-- Modullar va Mavzular ro'yxati -->
+  <section class="modules-section assignment-modules" aria-labelledby="modules-title">
+    <div class="modules-container">
+    {% for module in modules %}
+      <article class="module-academic-card">
+        <details class="module-details" open>
+          <summary class="module-academic-head">
+            <div class="module-head-left">
+              <span class="academic-arrow"></span>
+              <span class="module-order-badge">Modul {{ forloop.counter|stringformat:"02d" }}</span>
+              <div>
+                <h2 class="module-main-title">{{ module.name }}</h2>
+                {% if module.description %}
+                  <p class="module-main-desc">{{ module.description }}</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Modul darajasida faqat rasmiy ma'lumot -->
+            <div class="module-meta-info">
+              Mavzular soni: {{ module.mavzular.count }} ta
+            </div>
+          </summary>
+
+          <div class="module-topics-body">
+            {% for topic in module.mavzular.all %}
+              <div class="topic-academic-section">
+                <!-- Har bir mavzu alohida ochilib-yopiluvchi accordion -->
+                <details class="topic-details" {% if forloop.parentloop.first and forloop.first %}open{% endif %}>
+                  <summary class="topic-academic-head">
+                    <div class="topic-head-left">
+                      <span class="academic-arrow"></span>
+                      <span class="topic-index-badge">{{ forloop.parentloop.counter }}.{{ forloop.counter }}.</span>
+                      <h3 class="topic-academic-title">{{ topic.name }}</h3>
+                    </div>
+
+                    <!-- Mavzu darajasida ko'rsatiladigan natija foizi -->
+                    <div>
+                      <span class="topic-progress-badge {% if topic.progress_percent == 100 %}all-completed{% endif %}">
+                        {{ topic.passed_tasks }} / {{ topic.total_tasks }} topshiriq bajarildi ({{ topic.progress_percent }}%)
+                      </span>
+                    </div>
+                  </summary>
+
+                  {% if topic.resurslar_faol %}
+                  <div class="lesson-materials">
+                    <div class="materials-head">
+                      <span class="materials-title">Dars materiallari</span>
+                    </div>
+                    <div class="materials-grid">
+                      {% for r in topic.resurslar_faol %}
+                        {% if r.turi == 'video' and r.youtube_id %}
+                        <div class="material-card material-video">
+                          <div class="video-frame" data-video-id="{{ r.youtube_id }}"
+                               data-video-title="{{ r.title|escape }}"
+                               role="button" tabindex="0"
+                               aria-label="Videoni o‘ynatish: {{ r.title }}">
+                            <img src="https://i.ytimg.com/vi/{{ r.youtube_id }}/hqdefault.jpg"
+                                 alt="{{ r.title }}" loading="lazy"
+                                 referrerpolicy="strict-origin-when-cross-origin">
+                            <span class="play-btn" aria-hidden="true">▶</span>
+                          </div>
+                          <div class="material-meta">
+                            <span class="material-type type-video">Video darslik</span>
+                            <a class="material-title" href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>
+                          </div>
+                        </div>
+
+                        {% elif r.turi == 'pdf' %}
+                        <a class="material-card material-file is-pdf" href="{{ r.display_url }}" download>
+                          {% if r.preview %}
+                          <span class="material-preview">
+                            <img src="{{ r.preview.url }}" alt="{{ r.title }} — birinchi sahifa" loading="lazy">
+                            <span class="pdf-ribbon" aria-hidden="true">PDF</span>
+                          </span>
+                          {% else %}
+                          <span class="material-icon" aria-hidden="true">PDF</span>
+                          {% endif %}
+                          <div class="material-meta">
+                            <span class="material-type type-pdf">PDF qo‘llanma</span>
+                            <span class="material-title">{{ r.title }}</span>
+                            <span class="download-cta">
+                              <span>{% if r.file_size_label %}{{ r.file_size_label }} · {% endif %}Yuklab olish</span>
+                              <span class="dl-arrow" aria-hidden="true">↓</span>
+                            </span>
+                          </div>
+                        </a>
+
+                        {% else %}
+                        <a class="material-card material-file" href="{{ r.url }}" target="_blank" rel="noopener">
+                          <span class="material-icon icon-link" aria-hidden="true">🔗</span>
+                          <div class="material-meta">
+                            <span class="material-type type-link">Qo‘shimcha manba</span>
+                            <span class="material-title">{{ r.title }}</span>
+                          </div>
+                        </a>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  <div class="tasks-list">
+                    {% for task in topic.topshiriqlar.all %}
+                      <div class="task-card task-card-{{ task.user_status }}" data-task-title="{{ task.title|lower }}">
+                        <div class="task-card-left">
+                          <div class="task-info">
+                            <div class="task-header-row">
+                              <h4 class="task-card-title">
+                                {{ forloop.parentloop.counter }}.{{ forloop.counter }}. {{ task.title }}
+                              </h4>
+                              <span class="status-pill pill-{{ task.user_status }}">
+                                {% if task.user_status == 'passed' %}
+                                  Bajarilgan
+                                {% elif task.user_status == 'failed' %}
+                                  Qanoatsiz
+                                {% else %}
+                                  Topshirilmagan
+                                {% endif %}
+                              </span>
+                            </div>
+
+                            <div class="task-meta-row">
+                              <span class="task-badge-type">
+                                {% if task.turi == 'programming' %}
+                                  Dasturlash topshirig‘i
+                                {% elif task.turi == 'test' %}
+                                  Nazariy test ({{ task.test_savollar.count }} ta savol)
+                                {% elif task.turi == 'yozma' %}
+                                  Yozma topshiriq
+                                {% else %}
+                                  {{ task.get_turi_display }}
+                                {% endif %}
+                              </span>
+
+                              <span class="task-badge-score">
+                                {{ task.max_score }} ball maksimal
+                              </span>
+                            </div>
+
+                            {% if task.description %}
+                              <p class="task-card-desc">
+                                {{ task.description|truncatechars:130 }}
+                              </p>
+                            {% endif %}
+                          </div>
+                        </div>
+
+                        <div class="task-card-right">
+                          <a href="{% url 'tasks' task.slug %}" class="task-action-btn btn-{{ task.user_status }}">
+                            {% if task.user_status == 'passed' %}
+                              Qayta topshirish
+                            {% elif task.user_status == 'failed' %}
+                              Qayta urinish
+                            {% else %}
+                              Boshlash
+                            {% endif %}
+                          </a>
+                        </div>
+                      </div>
+                    {% empty %}
+                      <p style="padding: 10px 0; color: #64748b; font-size: 13px;">
+                        Ushbu mavzu bo‘yicha topshiriqlar hali joylashtirilmagan.
+                      </p>
+                    {% endfor %}
+                  </div>
+                </details>
+              </div>
+            {% empty %}
+              <p style="padding: 16px; color: #64748b; font-size: 13px;">
+                Ushbu modulda mavzular kiritilmagan.
+              </p>
+            {% endfor %}
+          </div>
+        </details>
+      </article>
+    {% empty %}
+      <div style="padding: 36px; text-align: center; background: #ffffff; border-radius: 8px; border: 1px solid #cbd5e1;">
+        <h3 style="margin: 0 0 6px; font-size: 16px;">Hozircha birorta modul mavjud emas</h3>
+        <p style="margin: 0; color: #64748b; font-size: 13px;">Tizim administratori tomonidan yangi modullar qo‘shilishi kutilmoqda.</p>
+      </div>
+    {% endfor %}
+    </div>
+  </section>
+</main>
+
+<!-- ===== Video darslik modali ===== -->
+<div class="video-modal" id="video-modal" role="dialog" aria-modal="true"
+     aria-labelledby="video-modal-title" hidden>
+  <div class="video-modal-backdrop" data-close></div>
+  <div class="video-modal-card">
+    <div class="video-modal-bar">
+      <span class="video-modal-title" id="video-modal-title">Video darslik</span>
+      <button type="button" class="video-modal-close" data-close aria-label="Oynani yopish">✕</button>
+    </div>
+    <div class="video-modal-frame" id="video-modal-frame"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'main/Kirish.js' %}"></script>
+  <script src="{% static 'main/Oquvchi.js' %}"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const btnExpandAll = document.getElementById("btn-expand-all");
+      const btnCollapseAll = document.getElementById("btn-collapse-all");
+      const searchInput = document.getElementById("topic-search-input");
+      const allTopicDetails = document.querySelectorAll(".topic-details");
+      const allModuleDetails = document.querySelectorAll(".module-details");
+
+      // Barchasini ochish
+      if (btnExpandAll) {
+        btnExpandAll.addEventListener("click", function () {
+          allModuleDetails.forEach(function (m) { m.open = true; });
+          allTopicDetails.forEach(function (t) { t.open = true; });
+        });
+      }
+
+      // Barchasini yopish (modullar ochiq qoladi, mavzular yopiladi)
+      if (btnCollapseAll) {
+        btnCollapseAll.addEventListener("click", function () {
+          allTopicDetails.forEach(function (t) { t.open = false; });
+        });
+      }
+
+      // 65 ta mavzu orasidan tezkor jonli qidirish
+      if (searchInput) {
+        searchInput.addEventListener("input", function () {
+          const query = searchInput.value.trim().toLowerCase();
+
+          allTopicDetails.forEach(function (topicDetails) {
+            const topicText = topicDetails.querySelector(".topic-academic-title").textContent.toLowerCase();
+            const tasks = topicDetails.querySelectorAll(".task-card");
+            let hasMatchingTask = false;
+
+            tasks.forEach(function (task) {
+              const taskTitle = (task.dataset.taskTitle || "").toLowerCase();
+              if (!query || taskTitle.includes(query)) {
+                task.style.display = "";
+                hasMatchingTask = true;
+              } else {
+                task.style.display = "none";
+              }
+            });
+
+            const topicMatches = topicText.includes(query);
+
+            if (!query) {
+              topicDetails.closest(".topic-academic-section").style.display = "";
+              topicDetails.open = false;
+            } else if (topicMatches || hasMatchingTask) {
+              topicDetails.closest(".topic-academic-section").style.display = "";
+              topicDetails.open = true; // Qidiruv mos kelganda avtomatik ochiladi
+            } else {
+              topicDetails.closest(".topic-academic-section").style.display = "none";
+            }
+          });
+        });
+      }
+
+      // Dars materiallari: video bosilganda modal oynada ochiladi
+      const videoModal = document.getElementById("video-modal");
+      const videoModalFrame = document.getElementById("video-modal-frame");
+      const videoModalTitle = document.getElementById("video-modal-title");
+
+      function openVideo(id, title) {
+        if (!id || !videoModal) return;
+        videoModalFrame.innerHTML =
+          '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
+          '?autoplay=1&rel=0" title="Video darslik" frameborder="0" ' +
+          'referrerpolicy="strict-origin-when-cross-origin" ' +
+          'allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" ' +
+          'allowfullscreen></iframe>';
+        videoModalTitle.textContent = title || "Video darslik";
+        videoModal.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeVideo() {
+        if (!videoModal) return;
+        videoModal.hidden = true;
+        videoModalFrame.innerHTML = "";   // o‘ynatish to‘xtaydi
+        document.body.style.overflow = "";
+      }
+
+      document.querySelectorAll(".video-frame").forEach(function (frame) {
+        frame.addEventListener("click", function () {
+          openVideo(frame.dataset.videoId, frame.dataset.videoTitle);
+        });
+        frame.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openVideo(frame.dataset.videoId, frame.dataset.videoTitle);
+          }
+        });
+      });
+
+      if (videoModal) {
+        videoModal.querySelectorAll("[data-close]").forEach(function (el) {
+          el.addEventListener("click", closeVideo);
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && !videoModal.hidden) closeVideo();
+        });
+      }
+    });
+  </script>
+{% endblock %}

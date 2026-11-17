@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{{ task.title|truncatechars:60 }} · Kod muharriri</title>
+  <link rel="stylesheet" href="{% static 'main/Kod yozish muharriri.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+<body class="coding-page">
+
+  <form id="code-form" method="post" action="{% url 'kod_run' %}">
+    {% csrf_token %}
+    <input type="hidden" id="task-slug" name="task" value="{{ task.slug|default:'' }}">
+    <input type="hidden" id="starter-code" value="{{ starter_code|default:'# Kodingizni shu yerda yozing\n' }}">
+  </form>
+
+  <header class="ide-header">
+    <div class="header-left">
+      <a class="back-link" href="{% url 'topshiriqlar' %}">
+        <span aria-hidden="true">←</span>
+        <span>Topshiriqlarga qaytish</span>
+      </a>
+      <span class="header-divider"></span>
+      <div class="breadcrumb">
+        <span>{{ module.name }} · {{ mavzu.name }}</span>
+        <span aria-hidden="true">›</span>
+        <strong>Amaliy topshiriq</strong>
+      </div>
+      <span class="task-progress">
+        <strong>Topshiriq {{ position }} / {{ total }}</strong>
+      </span>
+    </div>
+    <div class="header-tools">
+      <span class="timer-pill" title="Sahifada o‘tgan vaqt">
+        <span aria-hidden="true">◷</span>
+        <time id="elapsed-time">00:00</time>
+      </span>
+      <span class="save-indicator" id="save-indicator" title="Lokal xotiradagi holat">
+        <i></i> <span>Saqlangan</span>
+      </span>
+      <button class="help-button" id="help-button" type="button" title="Maslahatni ko‘rish">
+        <span aria-hidden="true">♧</span>
+        <span>Maslahat</span>
+      </button>
+      <a class="user-avatar" href="{% url 'user_dashboard' %}" aria-label="O‘quvchi profili" title="{{ request.user.get_full_name|default:request.user.username }}">
+        {{ avatar_initial }}
+      </a>
+    </div>
+  </header>
+
+  <main class="ide-main">
+    <div class="workspace">
+      <!-- Chap panel: Masala sharti va Urinishlar -->
+      <section class="problem-panel" id="problem-panel" aria-label="Topshiriq ma’lumotlari">
+        <div class="problem-heading">
+          <h1 id="problem-title">{{ task.title|capfirst }}</h1>
+          <p class="problem-topic" id="problem-topic">
+            {{ task.max_score }} ball{% if programming %} · Vaqt chegarasi: {{ programming.time_limit }} s · Xotira: {{ programming.memory_limit }} MB{% endif %}
+          </p>
+        </div>
+
+        <div class="panel-tabs" role="tablist" aria-label="Panel bo‘limlari">
+          <button type="button" class="panel-tab is-active" id="tab-problem" role="tab" aria-selected="true" aria-controls="pane-problem">
+            ▤ &nbsp; Masala sharti
+          </button>
+          <button type="button" class="panel-tab" id="tab-attempts" role="tab" aria-selected="false" aria-controls="pane-attempts">
+            ◴ &nbsp; Urinishlar <span id="attempts-count">({{ attempts|length }})</span>
+          </button>
+        </div>
+
+        <div class="problem-scroll">
+          <!-- Masala sharti bo'limi -->
+          <section class="left-pane" id="pane-problem" role="tabpanel" aria-labelledby="tab-problem">
+            <div class="description-card">
+              <h2><span aria-hidden="true">♧</span> Vazifa tavsifi</h2>
+              <p id="problem-description">{{ task.description|default:"Tavsif kiritilmagan."|linebreaksbr }}</p>
+            </div>
+
+            {% if sample_test %}
+            <div class="io-details">
+              <section>
+                <h2><span aria-hidden="true">↳</span> Kiruvchi ma’lumot (Input)</h2>
+                <pre class="code-sample">{{ sample_test.input_data }}</pre>
+              </section>
+              <section>
+                <h2><span aria-hidden="true">↗</span> Kutilgan natija (Output)</h2>
+                <pre class="code-sample">{{ sample_test.expected_output }}</pre>
+              </section>
+            </div>
+            {% endif %}
+
+            <section class="hint-card">
+              <button class="hint-toggle" id="hint-toggle" type="button" aria-expanded="false" aria-controls="hint-content">
+                <span>♧ &nbsp; Yordam va maslahatlar</span>
+                <span id="hint-icon" aria-hidden="true">⌄</span>
+              </button>
+              <div class="hint-content" id="hint-content" hidden>
+                <p>Masalani yechish bo‘yicha ko‘rsatma:</p>
+                <ol>
+                  <li><code>input()</code> funksiyasi orqali kiruvchi ma’lumotlarni o‘qib oling.</li>
+                  <li>Ma'lumotlar turini (masalan, <code>int()</code> yoki <code>float()</code>) to‘g‘ri o‘giring.</li>
+                  <li>Kerakli algoritmik shartlarni tekshiring va hisoblang.</li>
+                  <li>Natijani <code>print()</code> orqali chiqaring.</li>
+                </ol>
+              </div>
+            </section>
+          </section>
+
+          <!-- Urinishlar tarixi bo'limi -->
+          <section class="left-pane attempts-pane" id="pane-attempts" role="tabpanel" aria-labelledby="tab-attempts" hidden>
+            <div class="empty-state" id="attempts-empty" {% if attempts %}hidden{% endif %}>
+              <span aria-hidden="true">◴</span>
+              <h2>Hozircha urinishlar yo‘q</h2>
+              <p>“Ishga tushirish” tugmasini bossangiz, yuborgan kodingiz va natijangiz shu yerda qayd etiladi.</p>
+            </div>
+            <ul class="attempt-list" id="attempt-list" {% if not attempts %}hidden{% endif %}>
+              {% for a in attempts %}
+                <li class="attempt-item">
+                  <strong>#{{ a.number }}</strong>
+                  <span>{{ a.language_label }}</span>
+                  <span class="attempt-status is-{{ a.status }}">{{ a.get_status_display }}</span>
+                  <time datetime="{{ a.created_at|date:'c' }}">{{ a.created_at|date:"d.m.Y H:i" }}</time>
+                </li>
+              {% endfor %}
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- O'ng panel: Kod muharriri -->
+      <section class="editor-panel" id="editor" aria-label="Dastur kodi muharriri">
+        <div class="editor-topbar">
+          <div class="file-tabs" role="tablist">
+            <button class="file-tab is-active" type="button" role="tab" aria-selected="true">
+              <span class="python-icon">🐍</span>
+              <span>solution.py</span>
+              <i></i>
+            </button>
+          </div>
+          
+          <div class="runtime-info">
+            <span class="runtime-dot"></span>
+            <strong>Python 3</strong>
+          </div>
+          <span class="last-saved" id="last-saved">Avtomatik saqlanadi</span>
+          <button class="icon-tool" id="reset-code" type="button" aria-label="Boshlang‘ich kodni tiklash" title="Boshlang‘ich kodni tiklash">↻</button>
+          <button class="icon-tool text-size-tool" id="font-size-button" type="button" aria-label="Shrift o‘lchamini o‘zgartirish" title="Shrift o‘lchami (A / A+)">Tт</button>
+        </div>
+        
+        <div class="editor-body" id="solution-file">
+          <pre id="line-numbers" class="line-numbers" aria-hidden="true">1</pre>
+          <div class="code-input-wrap">
+            <textarea id="source-code" name="code" form="code-form" aria-label="Dastur kodini yozing" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off">{{ initial_code }}</textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Pastki boshqaruv paneli -->
+  <footer class="action-bar">
+    <div class="terminal-status">
+      <i id="status-dot"></i>
+      <strong>Muharrir holati:</strong>
+      <span id="terminal-text">Tayyor</span>
+    </div>
+    <div class="action-buttons">
+      <div id="complete-badge-wrap">
+        {% if is_complete %}
+          <span class="status-badge-complete"><span aria-hidden="true">✔</span> Bajarilgan</span>
+        {% endif %}
+      </div>
+      {% if next_task_url %}
+        <a class="next-button" href="{{ next_task_url }}">Keyingi topshiriq <span aria-hidden="true">→</span></a>
+      {% endif %}
+      <button class="run-button" id="submit-code" type="button">
+        <span aria-hidden="true">▶</span>
+        <span id="submit-button-text">Ishga tushirish</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- To'liq ekran rejimi (Imtihon / Nazorat muhiti) -->
+  <div class="fs-gate" id="fs-gate" role="dialog" aria-modal="true" aria-labelledby="fs-title">
+    <div class="fs-card">
+      <h2 id="fs-title">Diqqat! Imtihon tartibi</h2>
+      <p id="fs-text">
+        Topshiriq to‘liq ekranda ishlanadi.<br>
+        Topshiriqni bajarish vaqtida boshqa sahifalarga o‘tmang va to‘liq ekrandan chiqmang.
+      </p>
+      <button type="button" id="fs-start">Tushunarli va boshlash</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="{% static 'main/Alert.js' %}"></script>
+  <script src="{% static 'main/kod_yozish_dinamik.js' %}"></script>
+</body>
+</html>

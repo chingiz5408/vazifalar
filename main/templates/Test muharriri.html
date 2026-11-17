@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>{{ task.title }} · Test</title>
+  <link rel="stylesheet" href="{% static 'main/Test muharriri.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'user_dashboard' %}">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>Sputnik Academy</span>
+    </a>
+    <a class="back-link" href="{% url 'topshiriqlar' %}">← Kursga qaytish</a>
+  </header>
+
+  <main class="page">
+    <a class="back-link mobile-back" href="{% url 'topshiriqlar' %}">← Kursga qaytish</a>
+    <section class="test-card" aria-labelledby="test-title">
+      <p class="eyebrow">TEST TOPSHIRIG‘I</p>
+      <h1 id="test-title">{{ task.title }}</h1>
+      <p id="test-instruction" class="instruction">Har bir savol uchun bitta to‘g‘ri javobni tanlang.</p>
+      <div id="test-progress" class="test-progress">
+        {{ task.test_savollar.count }} ta savol · Har bir savolga bitta to‘g‘ri javob
+      </div>
+
+      <div class="actions">
+        <a class="primary-button center" href="{% url 'test_start' slug=task.slug %}">Testni boshlash</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

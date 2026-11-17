@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#F7F8FA">
+
+    <title>{{ task.title }} — Test</title>
+
+    <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="{% static 'main/Test muharriri.css' %}">
+</head>
+
+<body>
+<header class="topbar">
+    <a class="brand" href="{% url 'topshiriqlar' %}">
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        <span>Algoritmika</span>
+    </a>
+
+    <a class="back-link" href="{% url 'topshiriqlar' %}">← Kursga qaytish</a>
+</header>
+
+<main class="page">
+    <div class="test-layout">
+
+        <section class="test-card">
+            <div id="test-content">
+                <p class="eyebrow">TEST TOPSHIRIG‘I</p>
+
+                <h1>{{ task.title }}</h1>
+
+                <p class="instruction">
+                    Savolni diqqat bilan o‘qing va bitta javobni tanlang.
+                    Javobingizni o‘zgartirishingiz mumkin.
+                </p>
+
+                {% if savollar %}
+                    <div class="progress-info">
+                        <span id="question-counter">1 / {{ savollar|length }}-savol</span>
+                        <span id="answered-counter">0 ta javob belgilandi</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+
+                    <form id="test-form">
+                        {% csrf_token %}
+
+                        {% for savol in savollar %}
+                            <section
+                                class="question"
+                                data-question-index="{{ forloop.counter0 }}"
+                                {% if not forloop.first %}hidden{% endif %}
+                            >
+                                <div class="question-number">SAVOL {{ forloop.counter }}</div>
+
+                                <h2 class="question-text">{{ savol.text }}</h2>
+
+                                <div class="options">
+                                    {% for variant in savol.variantlar.all %}
+                                        <label class="option">
+                                            <input
+                                                type="radio"
+                                                name="savol_{{ savol.id }}"
+                                                value="{{ variant.id }}"
+                                                data-question-id="{{ savol.id }}"
+                                            >
+                                            <span>{{ variant.text }}</span>
+                                        </label>
+                                    {% empty %}
+                                        <p>Bu savol uchun variantlar hali kiritilmagan.</p>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        {% endfor %}
+
+                        <div class="question-navigation">
+                            <button type="button" id="previous-button" class="button" disabled>← Oldingi</button>
+                            <button type="button" id="next-button" class="button button-primary">Keyingi →</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p>Bu topshiriqda hozircha savollar mavjud emas.</p>
+                {% endif %}
+            </div>
+
+            <section id="result-panel" class="result-panel" hidden aria-live="polite">
+                <h2>Test yakunlandi</h2>
+                <p id="result-message"></p>
+                <p class="result-note">
+                    Bu sahifadagi natija hozircha brauzerda hisoblanmaydi.
+                    Natijani saqlash va baholash uchun server tekshiruvi kerak.
+                </p>
+                <a class="button button-primary" href="{% url 'topshiriqlar' %}">Kursga qaytish</a>
+            </section>
+        </section>
+
+        {% if savollar %}
+            <aside class="sidebar">
+                <section class="sidebar-card">
+                    <h2 class="sidebar-title">Savollar xaritasi</h2>
+
+                    <div id="question-grid" class="question-grid">
+                        {% for savol in savollar %}
+                            <button
+                                type="button"
+                                class="question-dot {% if forloop.first %}current{% endif %}"
+                                data-go-to="{{ forloop.counter0 }}"
+                                aria-label="{{ forloop.counter }}-savolga o‘tish"
+                            >{{ forloop.counter }}</button>
+                        {% endfor %}
+                    </div>
+
+                    <div class="legend">
+                        <span><i class="legend-mark"></i> Javobsiz</span>
+                        <span><i class="legend-mark done"></i> Javob berilgan</span>
+                    </div>
+
+                    <button type="button" id="finish-button" class="button button-primary finish-button">
+                        Testni yakunlash
+                    </button>
+                </section>
+            </aside>
+        {% endif %}
+
+    </div>
+</main>
+
+{% if savollar %}
+<div class="fs-gate" id="fs-gate" role="dialog" aria-modal="true" aria-labelledby="fs-title">
+    <div class="fs-card">
+        <h2 id="fs-title">Diqqat!</h2>
+        <p id="fs-text">
+            Test to‘liq ekranda topshiriladi.<br>
+            Testni bajarish vaqtida boshqa sahifalarga o‘tmang va to‘liq ekrandan chiqmang.
+        </p>
+        <button type="button" id="fs-start" class="button button-primary">Tushunarli</button>
+    </div>
+</div>
+
+<!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'main/Alert.js' %}"></script>
+
+<script>
+    (() => {
+    const $ = (id) => document.getElementById(id);
+
+    const questions = [...document.querySelectorAll(".question")];
+    const dots = [...document.querySelectorAll(".question-dot")];
+    const previousButton = $("previous-button");
+    const nextButton = $("next-button");
+    const finishButton = $("finish-button");
+    const counter = $("question-counter");
+    const answeredCounter = $("answered-counter");
+    const progressBar = $("progress-bar");
+    const form = $("test-form");
+    const resultPanel = $("result-panel");
+    const resultMessage = $("result-message");
+
+    if (!questions.length) return;
+
+    let currentIndex = 0;
+    let finished = false;
+
+    const gate = $("fs-gate");
+    const root = document.documentElement;
+    const fsSupported = !!(root.requestFullscreen || root.webkitRequestFullscreen);
+    const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+    let started = false;
+
+    function syncGate() {
+        const show = !finished && (fsSupported ? !isFullscreen() : !started);
+        gate.hidden = !show;
+        document.querySelectorAll("header, main").forEach((el) => { el.inert = show; });
+
+        if (show) {
+            if (started) {  // Esc bilan chiqilgan
+                $("fs-text").innerHTML =
+                    "To‘liq ekrandan chiqdingiz.<br>Davom etish uchun to‘liq ekranga qayting.";
+                $("fs-start").textContent = "Davom etish";
+            }
+            $("fs-start").focus();
+        }
+    }
+
+    $("fs-start").addEventListener("click", () => {
+        const request = root.requestFullscreen || root.webkitRequestFullscreen;
+        if (request) {
+            try {
+                const result = request.call(root);
+                if (result && result.catch) result.catch(() => {});
+            } catch (_) {}
+        }
+        started = true;
+        syncGate();
+    });
+
+    document.addEventListener("fullscreenchange", syncGate);
+    document.addEventListener("webkitfullscreenchange", syncGate);
+
+    const content = $("test-content");
+    ["copy", "cut", "contextmenu", "dragstart", "selectstart"].forEach((type) => {
+        content.addEventListener(type, (e) => e.preventDefault());
+    });
+
+    function getAnsweredCount() {
+        return questions.filter((q) => q.querySelector('input[type="radio"]:checked')).length;
+    }
+
+    function showQuestion(index) {
+        if (finished) return;
+
+        currentIndex = Math.max(0, Math.min(index, questions.length - 1));
+
+        questions.forEach((question, i) => { question.hidden = i !== currentIndex; });
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("current", i === currentIndex);
+            dot.classList.toggle("answered", Boolean(questions[i].querySelector('input[type="radio"]:checked')));
+        });
+
+        counter.textContent = `${currentIndex + 1} / ${questions.length}-savol`;
+        answeredCounter.textContent = `${getAnsweredCount()} ta javob belgilandi`;
+        progressBar.style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+
+        previousButton.disabled = currentIndex === 0;
+        nextButton.hidden = currentIndex === questions.length - 1;
+    }
+
+    
+async function finishTest() {
+    if (finished) return;
+
+    const answered = getAnsweredCount();
+    const unanswered = questions.length - answered;
+
+    let message = unanswered > 0
+        ? `${unanswered} ta savolga javob berilmadi.\nTestni yakunlashni tasdiqlaysizmi?`
+        : "Testni yakunlashni tasdiqlaysizmi?";
+
+    if (unanswered > 0) {
+        message += "\n\nDiqqat: Testni yakunlaganingizdan so‘ng javoblarni o‘zgartira olmaysiz.";
+    }
+
+    const confirmed = await AppAlert.confirm({
+        title: unanswered > 0 ? "Javoblar to‘liq emas" : "Testni yakunlash",
+        html: message.replace(/\n/g, "<br>"),
+        icon: unanswered > 0 ? "warning" : "question",
+        confirmButtonText: "Ha, yakunlash",
+        cancelButtonText: "Bekor qilish"
+    });
+    if (!confirmed) return;
+
+    const finishButton = $("finish-button");
+    finishButton.disabled = true;
+    finishButton.textContent = "Tekshirilmoqda...";
+
+    try {
+        const formData = new FormData();
+
+        form.querySelectorAll('input[type="radio"]:checked').forEach(input => {
+            formData.append("answer", input.value);
+        });
+
+        const csrfToken = form.querySelector(
+            '[name="csrfmiddlewaretoken"]'
+        ).value;
+
+        const response = await fetch(
+            "{% url 'test_result' task.slug %}",
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData,
+                credentials: "same-origin"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Testni tekshirishda xatolik yuz berdi.");
+        }
+
+        finished = true;
+        syncGate();
+
+        $("test-content").hidden = true;
+        document.querySelector(".sidebar").hidden = true;
+        resultPanel.hidden = false;
+
+        resultMessage.textContent =
+            `Natijangiz: ${data.score} / ${data.total_questions}.`;
+
+        $("result-panel").querySelector(".result-note").textContent =
+            "Test natijasi muvaffaqiyatli tekshirildi va saqlandi.";
+
+        AppAlert.success(
+            "Test yakunlandi!",
+            `Natijangiz: ${data.score} / ${data.total_questions}.`,
+            { confirmButtonText: "Natijani ko‘rish" }
+        );
+
+    } catch (error) {
+        AppAlert.error(
+            "Xatolik",
+            error.message || "Server bilan bog‘lanishda xatolik yuz berdi."
+        );
+    } finally {
+        if (!finished) {
+            finishButton.disabled = false;
+            finishButton.textContent = "Testni yakunlash";
+        }
+    }
+}
+
+    previousButton.addEventListener("click", () => showQuestion(currentIndex - 1));
+    nextButton.addEventListener("click", () => showQuestion(currentIndex + 1));
+    dots.forEach((dot) => dot.addEventListener("click", () => showQuestion(Number(dot.dataset.goTo))));
+
+    form.addEventListener("change", (event) => {
+        if (event.target.matches('input[type="radio"]')) showQuestion(currentIndex);
+    });
+
+    finishButton.addEventListener("click", finishTest);
+
+    showQuestion(0);
+    syncGate();
+})();
+</script>
+{% endif %}
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>{% block title %} {% endblock %} · Sputnik Academy</title>
+  <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  {% block css %}
+  {% endblock %}
+</head>
+<body class="dashboard-page">
+
+  <div class="dashboard-shell">
+    <aside id="dashboard-sidebar" class="dashboard-sidebar" aria-label="Asosiy navigatsiya">
+      <a class="sidebar-brand" href="{% url 'user_dashboard' %}" aria-label="Sputnik Academy bosh sahifasi">
+        <span class="brand-symbol" aria-hidden="true">✦</span>
+        <span>Sputnik Academy</span>
+      </a>
+      <nav class="sidebar-nav">
+        <a class="nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}is-active{% endif %}" href="{% url 'user_dashboard' %}" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">▦</span><span>Bosh sahifa</span>
+        </a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'topshiriqlar' or request.resolver_match.url_name == 'tasks' %}is-active{% endif %}" href="{% url 'topshiriqlar' %}">
+          <span class="nav-icon" aria-hidden="true">⌘</span><span>Amaliy topshiriqlar</span>
+        </a>
+      </nav>
+      
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button id="logout" class="nav-link logout-link" type="submit">
+          <span class="nav-icon" aria-hidden="true">↪</span><span>Chiqish</span>
+        </button>
+      </form>
+    </aside>
+
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Yon menyuni yopish">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="dashboard-search" type="search" placeholder="Darslar, topshiriqlar yoki mavzularni qidiring..." aria-label="Darslar va topshiriqlarni qidirish">
+        </label>
+        <div class="header-profile" id="profile">
+          <span class="profile-avatar" id="profile-avatar" aria-hidden="true">{{ request.user.first_name|slice:":1"|default:request.user.username|slice:":1"|upper }}</span>
+          <span class="profile-copy">
+            <strong id="profile-name">{{ request.user.get_full_name|default:request.user.username }}</strong>
+            <span>Backend dasturlash · Sputnik Academy</span>
+          </span>
+        </div>
+      </header>
+
+    {% block content %}
+    {% endblock %}
+    </div>
+  </div>
+
+  <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="{% static 'main/Alert.js' %}"></script>
+  {% block js %}
+  {% endblock %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+
+[Unit]
+Description=Sputnik Academy — kod bajaruvchi servis (queue_server)
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=sputnik
+Group=sputnik
+# pool.py, worker.py importlari uchun shu papka ish katalogi bo'lishi shart
+WorkingDirectory=/home/sputnik/loyha/code_runner
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/sputnik/loyha/venv/bin/python -u queue_server.py
+Restart=always
+RestartSec=5
+
+# --- Xavfsizlik cheklovlari ---
+# Docker CLI ishlatilgani uchun keng ruxsat kerak (docker.sock ga yozish).
+PrivateTmp=true
+NoNewPrivileges=false
+
+[Install]
+WantedBy=multi-user.target

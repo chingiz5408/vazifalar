@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}O‘quvchi · Sputnik Academy{% endblock %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'main/Kirish.css' %}">
+  <link rel="stylesheet" href="{% static 'main/Oquvchi.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-main" id="dashboard">
+  <section class="dashboard-intro" aria-labelledby="welcome-title">
+    <div>
+      <h1 id="welcome-title">Salom, <span id="student-name">{{ request.user.first_name|default:request.user.username }}</span>! <span class="wave" aria-hidden="true">👋</span></h1>
+      <p>Bugun yangi bilimlarni o‘rganishga tayyormisiz? Kurs davom etmoqda!</p>
+    </div>
+    <a class="current-week" href="{% url 'topshiriqlar' %}"><span class="status-dot"></span><span>Sizning balingiz</span><span class="week-badge points-badge"><strong>{{ total_points }}</strong> ball</span></a>
+  </section>
+
+  {% if active_topic %}
+  <section style="margin-bottom: 2%;" class="today-card {% if active_topic.done %}today-done{% endif %}" aria-label="Bugungi vazifa">
+    <div class="today-copy">
+      <span class="today-badge {% if active_topic.done %}is-done{% endif %}">
+        {% if active_topic.done %}✓ Bajarildi{% else %}● Bugungi vazifa{% endif %}
+      </span>
+      <h2>{{ active_topic.name }}</h2>
+    </div>
+    {% if active_topic.has_tasks %}
+    <div class="today-progress">
+      <div class="module-row-top">
+        <span>{{ active_topic.passed }}/{{ active_topic.total }} topshiriq</span>
+        <strong>{{ active_topic.percent }}%</strong>
+      </div>
+      <div class="progress-track"><span style="width: {{ active_topic.percent }}%"></span></div>
+      <p class="today-note">
+        {% if active_topic.done %}Barcha topshiriqlar bajarildi{% else %}{{ active_topic.pending }} ta topshiriq qoldi{% endif %}
+      </p>
+    </div>
+    <a class="primary-button" href="{% url 'topshiriqlar' %}">
+      {% if active_topic.done %}Ko‘rish →{% else %}Bajarish →{% endif %}
+    </a>
+    {% else %}
+    <div class="today-progress">
+      <p class="today-note">Ustoz hali bu mavzu uchun topshiriq qo‘shmadi.</p>
+    </div>
+    {% endif %}
+  </section>
+  {% else %}
+  <section class="today-card today-empty" aria-label="Bugungi vazifa">
+    <div class="today-copy">
+      <span class="today-badge">○ Faol mavzu yo‘q</span>
+      <h2>Ustoz hali mavzu e’lon qilmadi</h2>
+      <p class="today-note">Yangi mavzu ochilganda shu yerda bugungi vazifa ko‘rinadi.</p>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="stats-grid" aria-label="O‘quv natijalari">
+    <article class="stat-card">
+      <div class="stat-heading"><span>Bugungi topshiriqlar</span><span class="stat-icon green">✓</span></div>
+      {% if active_topic and active_topic.has_tasks %}
+      <p class="stat-number">{{ active_topic.passed }} <span>/ {{ active_topic.total }}</span></p>
+      <p class="stat-caption"><span>{{ active_topic.pending }} ta bajarilmagan</span></p>
+      {% else %}
+      <p class="stat-number">0 <span>/ 0</span></p>
+      <p class="stat-caption"><span>Ustoz hali topshiriq bermagan</span></p>
+      {% endif %}
+    </article>
+    <article class="stat-card">
+      <div class="stat-heading"><span>Bajarilgan vazifalar</span><span class="stat-icon blue">▤</span></div>
+      <p class="stat-number">{{ passed_count }} <span>/ {{ total_tasks }}</span></p>
+      <div class="stat-foot"><span>Shu vaqtgacha</span><strong>{{ overall_percent }}%</strong></div>
+      <div class="progress-track"><span style="width: {{ overall_percent }}%"></span></div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-heading"><span>O‘tilgan masalalar</span><span class="stat-icon violet">⚑</span></div>
+      <p class="stat-number">{{ accepted_tasks }} <span>ta</span></p>
+      <p class="stat-caption"><span>Programming va algorithm</span></p>
+    </article>
+    <article class="stat-card">
+      <div class="stat-heading"><span>Jami urinishlar</span><span class="stat-icon amber">↻</span></div>
+      <p class="stat-number">{{ attempts_count }} <span>ta</span></p>
+      <p class="stat-caption"><span>Kod ishga tushirishlar</span></p>
+    </article>
+  </section>
+
+  <section class="dashboard-single" aria-label="So‘nggi faoliyat">
+    <article class="panel recent-card">
+      <div class="panel-heading">
+        <div>
+          <h2>So‘nggi faoliyat</h2>
+          <p>Oxirgi urinish va test natijalari</p>
+        </div>
+      </div>
+      <div class="activity-list">
+        {% for item in recent_activity %}
+        <div class="activity-item">
+          <span class="activity-icon {% if item.ok %}mint{% else %}lavender{% endif %}" aria-hidden="true">{{ item.icon }}</span>
+          <div class="activity-copy">
+            <div>
+              <strong>{{ item.title|truncatechars:38 }}</strong>
+              <small>{{ item.created_at|date:"d.M H:i" }}</small>
+            </div>
+            <p>
+              <span class="{% if item.ok %}passed-tag{% else %}neutral-tag{% endif %}">{{ item.status_label }}</span>
+              <span class="activity-muted">{{ item.label }}</span>
+            </p>
+          </div>
+        </div>
+        {% empty %}
+        <p class="module-empty">Hozircha faoliyat yo‘q.</p>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+</main>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'main/Oquvchi.js' %}"></script>
+{% endblock %}

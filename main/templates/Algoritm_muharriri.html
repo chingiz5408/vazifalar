@@ -1,0 +1,323 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>{{ task.title|truncatechars:60 }} · Algoritm muharriri</title>
+  <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="{% static 'main/Algoritm muharriri.css' %}">
+</head>
+<body>
+
+<!-- ============================================================
+     SARLAVHA
+     ============================================================ -->
+<header>
+  <a class="back-link" href="{% url 'topshiriqlar' %}" aria-label="Topshiriqlar ro‘yxatiga qaytish" title="Topshiriqlar ro‘yxatiga qaytish">← Kurs</a>
+
+  <div class="header-info">
+    <h1>{{ task.title|capfirst }}</h1>
+    <p class="task-meta">
+      {{ module.name }} · {{ mavzu.name }}
+      · Topshiriq {{ position }} / {{ total }}
+      · {{ task.max_score }} ball
+    </p>
+  </div>
+
+  <div class="header-actions">
+    <button id="task-open" type="button">Shart</button>
+    <button id="demo" type="button">Namuna</button>
+    <button id="del" type="button">O‘chirish</button>
+    <button id="clear" type="button">Tozalash</button>
+    <button id="run" type="button" class="primary-button">Ishga tushirish</button>
+    {% if next_task_url %}
+      <a class="next-link" href="{{ next_task_url }}">Keyingi topshiriq <span aria-hidden="true">→</span></a>
+    {% endif %}
+    <a class="user-avatar" href="{% url 'user_dashboard' %}" aria-label="Profil" title="{{ request.user.get_full_name|default:request.user.username }}">{{ avatar_initial }}</a>
+  </div>
+</header>
+
+<!-- ============================================================
+     ASOSIY MAYDON
+     ============================================================ -->
+   
+<div class="app" data-task-slug="{{ task.slug }}" data-submit-url="{% url 'algorithm_submit' task.slug %}" data-csrf="{{ csrf_token }}">
+
+  <!-- ---------- Chap panel ---------- -->
+  <aside>
+    <h2>Shakllar</h2>
+
+    <!-- Palitra: har bir .pal bosilsa yoki sudralsa blok qo'shiladi (data-t = blok turi) -->
+    <div id="pal">
+
+      <div class="pal" draggable="true" data-t="start">
+        <svg viewBox="-2 -2 144 54" aria-hidden="true">
+          <rect class="shape" width="140" height="50" rx="25"
+                style="fill:var(--c-start)" stroke="var(--stroke)" stroke-width="2"/>
+        </svg>
+        <small>Boshlash</small>
+      </div>
+
+      <div class="pal" draggable="true" data-t="io">
+        <svg viewBox="-2 -2 164 60" aria-hidden="true">
+          <polygon class="shape" points="16,0 160,0 144,56 0,56"
+                   style="fill:var(--c-io)" stroke="var(--stroke)" stroke-width="2"/>
+        </svg>
+        <small>Kiritish / Chiqarish</small>
+      </div>
+
+      <div class="pal" draggable="true" data-t="calc">
+        <svg viewBox="-2 -2 154 60" aria-hidden="true">
+          <rect class="shape" width="150" height="56"
+                style="fill:var(--c-calc)" stroke="var(--stroke)" stroke-width="2"/>
+        </svg>
+        <small>Hisoblash</small>
+      </div>
+
+      <div class="pal" draggable="true" data-t="cond">
+        <svg viewBox="-2 -2 164 94" aria-hidden="true">
+          <polygon class="shape" points="80,0 160,45 80,90 0,45"
+                   style="fill:var(--c-cond)" stroke="var(--stroke)" stroke-width="2"/>
+        </svg>
+        <small>Shart</small>
+      </div>
+
+      <div class="pal" draggable="true" data-t="end">
+        <svg viewBox="-2 -2 144 54" aria-hidden="true">
+          <rect class="shape" width="140" height="50" rx="25"
+                style="fill:var(--c-end)" stroke="var(--stroke)" stroke-width="2"/>
+        </svg>
+        <small>Tugash</small>
+      </div>
+
+    </div>
+
+    <h2>Bog‘lanishlar</h2>
+    <ol id="links"></ol>
+
+    <h2>O‘zgaruvchilar</h2>
+    <div id="variables" class="variables"></div>
+
+    {% if algorithm_tests %}
+      <h2>Testlar</h2>
+      <div class="task-vars">
+        <p><span>{{ algorithm_tests|length }} ta test</span></p>
+      </div>
+    {% endif %}
+  </aside>
+
+  <!-- ---------- Ishchi maydon ---------- -->
+  <main id="main">
+    <div class="zoom-controls" aria-label="Ishchi maydon masshtabi">
+      <button id="zoom-out" type="button" aria-label="Kichiklashtirish" title="Kichiklashtirish">−</button>
+      <output id="zoom-level" aria-live="polite">100%</output>
+      <button id="zoom-in" type="button" aria-label="Kattalashtirish" title="Kattalashtirish">+</button>
+      <button id="zoom-reset" type="button" title="Masshtabni tiklash">Tiklash</button>
+    </div>
+
+    <svg id="ws">
+      <defs>
+        <pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="var(--grid)" stroke-width="1"/></pattern>
+        <pattern id="G" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="url(#g)"/><path d="M100 0H0V100" fill="none" stroke="var(--line)" stroke-width="1"/></pattern>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--edge)"/></marker>
+      </defs>
+      <rect id="bg" width="100%" height="100%" fill="url(#G)"/>
+      <g id="viewport">
+        <g id="gE"></g>   <!-- bog'lanishlar shu yerga -->
+        <g id="gN"></g>   <!-- bloklar shu yerga -->
+        <path id="tmp" class="edge" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+      </g>
+    </svg>
+
+    <!-- Blok matnini tahrirlash maydoni -->
+    <input id="edit">
+
+    <div class="hint">Shaklni sudrab olib keling · nuqtadan tortib boshqa shaklga ulang · bo‘sh joyni sudrab suring · g‘ildirak bilan zoom · ikki marta bosing — matn · Delete — o‘chirish</div>
+  </main>
+</div>
+
+<!-- ============================================================
+     DIALOGLAR
+     ============================================================ -->
+
+<!-- Topshiriq sharti -->
+<dialog id="task-dialog" class="sa-dialog" aria-labelledby="task-dialog-title">
+  <div class="sa-icon sa-icon-info" aria-hidden="true">i</div>
+  <h2 id="task-dialog-title">{{ task.title }}</h2>
+
+  <dl class="task-meta-list">
+    <dt>Mavzu</dt>
+    <dd>{{ mavzu.name }}</dd>
+    <dt>Ball</dt>
+    <dd>{{ task.max_score }}</dd>
+    {% if algorithm_tests %}
+      <dt>Testlar</dt>
+      <dd>{{ algorithm_tests|length }} ta</dd>
+    {% endif %}
+  </dl>
+
+  <div class="task-description">
+    {{ task.description|default:"Tavsif kiritilmagan."|linebreaks }}
+  </div>
+
+  <div class="run-actions">
+    <button id="task-close" class="sa-btn sa-btn-confirm" type="button">Tushunarli</button>
+  </div>
+</dialog>
+
+<!-- Algoritmni ishga tushirish -->
+<dialog id="run-dialog" class="sa-dialog">
+  <div class="sa-icon sa-icon-play" aria-hidden="true">▶</div>
+  <h2>Algoritmni ishga tushirish</h2>
+
+  <div id="run-inputs"></div>
+
+  <section class="run-tests" aria-labelledby="tests-title">
+    <h3 id="tests-title">Bazadagi testlar</h3>
+    <p id="tests-summary" role="status" aria-live="polite"></p>
+    <ol id="test-results" class="test-results"></ol>
+    <p id="submit-status" role="status" aria-live="polite"></p>
+  </section>
+
+  <p id="run-result" role="status" aria-live="polite"></p>
+
+  <div class="run-actions">
+    <button id="run-close" class="sa-btn sa-btn-cancel" type="button">Yopish</button>
+    <button id="run-tests" class="sa-btn sa-btn-tests" type="button">Testlar bilan tekshirish</button>
+    <button id="run-submit" class="sa-btn sa-btn-confirm" type="button">Ishga tushirish</button>
+  </div>
+</dialog>
+
+<!-- ============================================================
+     <template> LAR — JS shulardan nusxa oladi
+     Matn/qiymat yoziladigan joylar: data-slot="..."
+     ============================================================ -->
+
+<!-- Bog'lanishlar ro'yxatidagi qator: "A → B (Ha)" -->
+<template id="tpl-link">
+  <li data-slot="text"></li>
+</template>
+
+<!-- O'zgaruvchi chipi -->
+<template id="tpl-variable">
+  <button type="button" class="variable-chip" draggable="true" data-slot="name"></button>
+</template>
+
+<!-- "Ishga tushirish" dialogidagi kiritish maydoni -->
+<template id="tpl-run-input">
+  <label>
+    <span data-slot="name"></span> qiymati
+    <input type="number" step="any" required data-slot="field">
+  </label>
+</template>
+
+<!-- Test natijasi qatori (class: test-ok yoki test-fail JS qo'yadi) -->
+<template id="tpl-test-result">
+  <li data-slot="text"></li>
+</template>
+
+<!-- Bog'lanish (edge): chiziq, bosish uchun qalin ko'rinmas chiziq, "Ha/Yo'q" yorlig'i.
+     Yorliq faqat shart (cond) blokidan chiqqanda qoldiriladi, aks holda JS o'chiradi. -->
+<template id="tpl-edge">
+  <svg>
+    <g data-ref="edge-group">
+      <path class="edge" marker-end="url(#ar)" data-ref="edge-line"/>
+      <path class="hit" data-ref="edge-hit"/>
+      <text class="lbl" data-ref="edge-label"></text>
+    </g>
+  </svg>
+</template>
+
+<!-- Bloklar (node). Har birida: shakl, matn va 4 ta port (t/r/b/l).
+     Joylashuvi JS da: transform="translate(x,y)" va data-id. -->
+<template id="tpl-node-start">
+  <svg>
+    <g class="node" data-ref="node" data-type="start">
+      <rect class="shape" width="140" height="50" rx="25" style="fill:var(--c-start)"/>
+      <text x="70" y="25" data-slot="text"></text>
+      <circle class="port" data-side="t" cx="70"  cy="0"  r="6"/>
+      <circle class="port" data-side="r" cx="140" cy="25" r="6"/>
+      <circle class="port" data-side="b" cx="70"  cy="50" r="6"/>
+      <circle class="port" data-side="l" cx="0"   cy="25" r="6"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-node-io">
+  <svg>
+    <g class="node" data-ref="node" data-type="io">
+      <polygon class="shape" points="16,0 160,0 144,56 0,56" style="fill:var(--c-io)"/>
+      <text x="80" y="28" data-slot="text"></text>
+      <circle class="port" data-side="t" cx="80"  cy="0"  r="6"/>
+      <circle class="port" data-side="r" cx="160" cy="28" r="6"/>
+      <circle class="port" data-side="b" cx="80"  cy="56" r="6"/>
+      <circle class="port" data-side="l" cx="0"   cy="28" r="6"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-node-calc">
+  <svg>
+    <g class="node" data-ref="node" data-type="calc">
+      <rect class="shape" width="150" height="56" style="fill:var(--c-calc)"/>
+      <text x="75" y="28" data-slot="text"></text>
+      <circle class="port" data-side="t" cx="75"  cy="0"  r="6"/>
+      <circle class="port" data-side="r" cx="150" cy="28" r="6"/>
+      <circle class="port" data-side="b" cx="75"  cy="56" r="6"/>
+      <circle class="port" data-side="l" cx="0"   cy="28" r="6"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-node-cond">
+  <svg>
+    <g class="node" data-ref="node" data-type="cond">
+      <polygon class="shape" points="80,0 160,45 80,90 0,45" style="fill:var(--c-cond)"/>
+      <text x="80" y="45" data-slot="text"></text>
+      <circle class="port" data-side="t" cx="80"  cy="0"  r="6"/>
+      <circle class="port" data-side="r" cx="160" cy="45" r="6"/>
+      <circle class="port" data-side="b" cx="80"  cy="90" r="6"/>
+      <circle class="port" data-side="l" cx="0"   cy="45" r="6"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-node-end">
+  <svg>
+    <g class="node" data-ref="node" data-type="end">
+      <rect class="shape" width="140" height="50" rx="25" style="fill:var(--c-end)"/>
+      <text x="70" y="25" data-slot="text"></text>
+      <circle class="port" data-side="t" cx="70"  cy="0"  r="6"/>
+      <circle class="port" data-side="r" cx="140" cy="25" r="6"/>
+      <circle class="port" data-side="b" cx="70"  cy="50" r="6"/>
+      <circle class="port" data-side="l" cx="0"   cy="25" r="6"/>
+    </g>
+  </svg>
+</template>
+
+{{ algorithm_tests|json_script:"algorithm-tests" }}
+
+<!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'main/Alert.js' %}"></script>
+<script src="{% static 'main/Algoritm bajarish.js' %}"></script>
+<script src="{% static 'main/Algoritm muharriri.js' %}"></script>
+<script>
+  (function () {
+    const openButton = document.getElementById('task-open');
+    const dialog = document.getElementById('task-dialog');
+    const closeButton = document.getElementById('task-close');
+    if (!openButton || !dialog || !closeButton) return;
+
+    openButton.addEventListener('click', () => dialog.showModal());
+    closeButton.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  })();
+</script>
+</body>
+</html>

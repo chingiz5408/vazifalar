@@ -1,0 +1,17 @@
+# Sputnik Academy — asosiy bog'liqliklar
+# O'rnatish: pip install -r requirements.txt
+
+Django==5.2.18
+django-nested-admin==4.1.6
+
+# PDF birinchi sahifasidan preview yaratish (admin uchun)
+pymupdf==1.28.2
+
+# Kod bajaruvchi servis bilan HTTP aloqa
+requests==2.34.2
+
+# .env faylini o'qish (production sozlamalari)
+python-dotenv==1.2.4
+
+# Production server (faqat Linux/VPS uchun; Windows'da ishlamaydi)
+gunicorn>=22.0

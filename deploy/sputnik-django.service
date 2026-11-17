@@ -1,0 +1,37 @@
+# ==========================================================================
+# systemd — Sputnik Academy (Django + Gunicorn)
+# Joy: /etc/systemd/system/sputnik-django.service
+#
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now sputnik-django
+#   sudo systemctl status sputnik-django
+#   journalctl -u sputnik-django -f
+# ==========================================================================
+
+[Unit]
+Description=Sputnik Academy — Django (gunicorn)
+After=network.target
+
+[Service]
+Type=notify
+User=sputnik
+Group=www-data
+WorkingDirectory=/home/sputnik/loyha
+# .env faylidan SECRET_KEY, DEBUG, ALLOWED_HOSTS, SECURE_SSL o'qiladi
+EnvironmentFile=/home/sputnik/loyha/.env
+ExecStart=/home/sputnik/loyha/venv/bin/gunicorn --config gunicorn.conf.py config.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+KillSignal=SIGQUIT
+TimeoutStopSec=30
+
+# --- Xavfsizlik cheklovlari ---
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/home/sputnik/loyha/media /home/sputnik/loyha/db.sqlite3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,200 @@
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#F7F8FA;--panel:#fff;--text:#1F2937;--muted:#64748B;--line:#E4E9F0;--grid:#e3e6ec;--edge:#3b4252;--primary:#17365D;--primary-hover:#102945;--accent:#2F5D8A;
+--c-start:#d6f5e0;--c-io:#dbe8ff;--c-calc:#fdf0cc;--c-cond:#ecdcff;--c-end:#fcd9d9;--stroke:#4b5563}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+--bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#2F5D8A;
+--c-start:#1f4a31;--c-io:#1f3a66;--c-calc:#5a4713;--c-cond:#47296b;--c-end:#5e2626;--stroke:#8a93a6}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14171d;--panel:#1d212a;--text:#e8ebf1;--muted:#9aa3b5;--line:#323846;--grid:#232834;--edge:#aab3c5;--accent:#2F5D8A;
+--c-start:#1f4a31;--c-io:#1f3a66;--c-calc:#5a4713;--c-cond:#47296b;--c-end:#5e2626;--stroke:#8a93a6}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:16px;margin:0;flex:1;min-width:140px}
+button{font:inherit;padding:6px 12px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+.app{flex:1;display:flex;min-height:0}
+aside{width:170px;background:var(--panel);border-right:1px solid var(--line);padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+aside h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:4px 0 0}
+.pal{cursor:grab;border:1px dashed var(--line);border-radius:8px;padding:6px;text-align:center;user-select:none}
+.pal:hover{border-color:var(--accent)}
+.pal svg{width:100%;height:46px;display:block}
+.pal small{color:var(--muted)}
+#links{font-size:12px;color:var(--muted);margin:0;padding-left:16px}
+#links li{margin:2px 0}
+.variables{display:flex;flex-wrap:wrap;gap:5px}
+.variable-chip{padding:3px 8px;border-radius:14px;font-size:12px;cursor:grab}
+.variable-chip:active{cursor:grabbing}
+main{flex:1;position:relative;min-width:0}
+svg#ws{width:100%;height:100%;display:block;touch-action:none}
+#bg{cursor:grab}
+#main.panning #bg{cursor:grabbing}
+.zoom-controls{position:absolute;z-index:1;top:10px;right:10px;display:flex;align-items:center;gap:6px;padding:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.zoom-controls button{min-width:34px;padding:4px 9px}
+#zoom-level{min-width:44px;text-align:center;font-size:12px;color:var(--muted)}
+/* ===== SweetAlert2 uslubidagi dialoglar ===== */
+dialog.sa-dialog{
+  width:min(512px,calc(100% - 32px));
+  padding:0 0 1.25em;
+  border:none;
+  border-radius:.3125rem;
+  background:var(--panel);
+  color:var(--text);
+  text-align:center;
+  box-shadow:0 10px 40px rgb(0 0 0 / 25%);
+  overflow:visible;
+}
+dialog.sa-dialog::backdrop{background:rgb(0 0 0 / 40%)}
+dialog.sa-dialog[open]{animation:saPop .18s ease-out}
+@keyframes saPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+
+dialog.sa-dialog h2{
+  margin:0;
+  padding:.8em 1em 0;
+  font-size:1.5em;
+  font-weight:600;
+  text-align:center;
+  line-height:1.3;
+  overflow-wrap:break-word;
+}
+
+/* Duyurga ikonkasi (SweetAlert2 ramzi) */
+.sa-icon{
+  display:grid;
+  place-items:center;
+  width:80px;
+  height:80px;
+  margin:2em auto .4em;
+  border:.25em solid currentColor;
+  border-radius:50%;
+  font-size:34px;
+  font-weight:700;
+  line-height:1;
+  user-select:none;
+}
+.sa-icon-info{color:#3fc3ee}
+.sa-icon-play{color:#7066e0;font-size:26px;padding-left:5px}
+.sa-icon-success{color:#a5dc86}
+.sa-icon-error{color:#f27474}
+
+/* Tugmalar (SweetAction ranglari) */
+.run-actions{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:.6em;
+  margin:1.25em auto 0;
+  padding:0 1em;
+}
+.sa-btn{
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  padding:.62em 1.5em;
+  border:0;
+  border-radius:.25em;
+  cursor:pointer;
+  transition:filter .15s, background .15s, transform .1s;
+}
+.sa-btn:active{transform:translateY(1px)}
+.sa-btn:focus-visible{outline:2px solid #7066e0;outline-offset:2px}
+.sa-btn-confirm{background:#7066e0;color:#fff}
+.sa-btn-confirm:hover{filter:brightness(1.1)}
+.sa-btn-cancel{background:#6e7881;color:#fff}
+.sa-btn-cancel:hover{filter:brightness(1.1)}
+.sa-btn-tests{background:transparent;color:#7066e0;border:1px solid #7066e0}
+.sa-btn-tests:hover{background:rgb(112 102 224 / 10%)}
+.sa-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+/* Ishga tushirish formasi */
+#run-inputs{display:grid;gap:10px;padding:1.2em 1.6em 0;text-align:left}
+#run-inputs label{display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+#run-inputs input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:.3125rem;background:var(--bg);color:var(--text)}
+#run-inputs input:focus{outline:none;border-color:#7066e0;box-shadow:0 0 0 3px rgb(112 102 224 / 22%)}
+
+/* Natija qutisi */
+#run-result{
+  white-space:pre-line;
+  margin:1em 1.6em 0;
+  padding:.7em 1em;
+  border-radius:.3125rem;
+  background:rgb(47 158 86 / 12%);
+  color:#2f9e56;
+  text-align:left;
+  font-size:14px;
+}
+#run-result:empty{display:none}
+#run-result.error{background:rgb(214 69 69 / 12%);color:#e05252}
+
+/* Bazadagi testlar */
+.run-tests{margin-top:1.1em;padding:0 1.6em;text-align:left}
+.run-tests h3{
+  margin:0 0 .5em;
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:var(--muted);
+}
+#tests-summary{margin:0;font-size:14px;font-weight:600;color:var(--muted)}
+#tests-summary:empty{display:none}
+#tests-summary.ok{color:#2f9e56}
+.test-results{list-style:none;display:grid;gap:.4em;margin:.5em 0 0;padding:0}
+.test-results li{padding:.55em .9em;border-radius:.3125rem;font-size:13px;line-height:1.45}
+.test-ok{background:rgb(47 158 86 / 14%);color:#2f9e56}
+.test-ok::before{content:"✓ ";font-weight:700}
+.test-fail{background:rgb(214 69 69 / 14%);color:#e05252}
+.test-fail::before{content:"✗ ";font-weight:700}
+#submit-status{margin:.6em 0 0;font-size:13px;color:var(--muted)}
+#submit-status:empty{display:none}
+.node{cursor:move}
+.node .shape{stroke:var(--stroke);stroke-width:1.5}
+.node.sel .shape{stroke:var(--accent);stroke-width:3}
+.node text{fill:var(--text);font-size:13px;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.port{fill:var(--panel);stroke:var(--accent);stroke-width:1.5;opacity:.0;cursor:crosshair}
+.node:hover .port,.node.sel .port,.show .port{opacity:1}
+.edge{fill:none;stroke:var(--edge);stroke-width:2}
+.edge.sel{stroke:var(--accent);stroke-width:3}
+.hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+.lbl{font-size:12px;font-weight:600;fill:var(--accent);text-anchor:middle;cursor:pointer;paint-order:stroke;stroke:var(--bg);stroke-width:4px}
+#edit{position:absolute;display:none;font:inherit;padding:4px;border:2px solid var(--accent);border-radius:6px;background:var(--panel);color:var(--text);text-align:center}
+.hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--muted);pointer-events:none}
+@media (max-width:640px){aside{width:100px}.pal small{display:none}#links{display:none}}
+#tmp{display:none}
+
+/* Sarlavha: topshiriq ma’lumoti va amallar */
+.back-link{color:var(--accent);text-decoration:none;font-size:13px;white-space:nowrap}
+.back-link:hover{text-decoration:underline}
+.header-info{flex:1;min-width:160px}
+.header-info h1{font-size:16px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task-meta{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.primary-button{background:var(--primary);border-color:var(--primary);color:#fff}
+.primary-button:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+.next-link{padding:6px 10px;border:1px solid var(--line);border-radius:8px;color:var(--accent);font-size:13px;text-decoration:none;white-space:nowrap}
+.next-link:hover{border-color:var(--accent)}
+.user-avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;font-size:13px;font-weight:600;text-decoration:none}
+
+/* Chap paneldagi topshiriq o‘zgaruvchilari */
+.task-vars{display:grid;gap:6px;font-size:12px;color:var(--muted)}
+.task-vars p{display:flex;align-items:center;gap:6px;margin:0;flex-wrap:wrap}
+.task-vars code{padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+
+/* Topshiriq sharti oynasi */
+#task-dialog{width:min(520px,calc(100% - 32px));max-height:80vh;overflow:auto}
+#task-dialog .task-meta-list,
+#task-dialog .task-description{padding:0 1.6em;text-align:left}
+.task-meta-list{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:1em 0 0;font-size:13px}
+.task-meta-list dt{color:var(--muted)}
+.task-meta-list dd{margin:0}
+.task-meta-list code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}
+.task-description{margin-top:12px;font-size:13px;line-height:1.55}
+.task-description p{margin:0 0 8px}
+.task-description ul,.task-description ol{margin:0 0 8px;padding-left:20px}
+
+@media (max-width:640px){
+  .task-meta{display:none}
+  .header-actions{gap:4px}
+  .header-actions button{padding:5px 8px;font-size:12px}
+  .header-actions .next-link,.header-actions .user-avatar{display:none}
+}

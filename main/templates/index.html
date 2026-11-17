@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F7F8FA">
+  <title>Sputnik Academy · Topshiriqlar platformasi</title>
+  <link rel="stylesheet" href="{% static 'main/Kirish.css' %}">
+</head>
+<body class="landing-page">
+  <header class="topbar">
+    <a class="brand" href="{% url 'index' %}" aria-label="Sputnik Academy bosh sahifasi">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>Sputnik Academy</span>
+    </a>
+    <nav class="header-actions" aria-label="Hisob amallari">
+      {% if request.user.is_authenticated %}
+        <a class="editor-link" href="{% url 'user_dashboard' %}">Mening profilim</a>
+      {% else %}
+        <a class="editor-link" href="{% url 'login' %}">Kirish</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="landing-main">
+    <section class="welcome landing-hero" aria-labelledby="landing-title">
+      <div class="landing-copy">
+        <p class="eyebrow">SPUTNIK ACADEMY <span aria-hidden="true">/</span> O‘QUVCHILAR UCHUN</p>
+        <h1 id="landing-title">O‘rgan. <span>Bajar. Yana o‘rgan.</span></h1>
+        <p class="intro">Backend dasturlashni nazariya bilan cheklamay, amaliy va mustaqil topshiriqlar orqali o‘rganing. Python, Django va ma’lumotlar bazasi bo‘yicha masalalarni bajaring.</p>
+        <div class="course-meta">
+          <span>Backend amaliy topshiriqlari</span>
+          <span aria-hidden="true">·</span>
+          <span>Mustaqil masalalar</span>
+          <span aria-hidden="true">·</span>
+          <span>Avtomatik tekshirish</span>
+        </div>
+        <div class="hero-actions">
+          {% if request.user.is_authenticated %}
+            <a class="start-link" href="{% url 'topshiriqlar' %}">Topshiriqlarga o‘tish <span aria-hidden="true">→</span></a>
+          {% else %}
+            <a class="start-link" href="{% url 'login' %}">Topshiriqlarni boshlash <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </div>
+
+      <section class="track-overview" aria-labelledby="tracks-title">
+        <div class="track-heading">
+          <div>
+            <p class="eyebrow">SENI NIMALAR KUTMOQDA?</p>
+            <h2 id="tracks-title">Amaliy tajriba orttiring</h2>
+          </div>
+          <span class="track-total" aria-label="To‘rtta topshiriq turi">01—04</span>
+        </div>
+        <ol class="track-list">
+          <li><span class="track-number">01</span><div><h3>Amaliy topshiriqlar</h3><p>O‘rganganingizni mashqda sinab ko‘ring</p></div></li>
+          <li><span class="track-number">02</span><div><h3>Mustaqil masalalar</h3><p>O‘zingiz o‘ylab, yechim toping</p></div></li>
+          <li><span class="track-number">03</span><div><h3>Algoritm va kod</h3><p>Dastur tuzing va avtomatik tekshiring</p></div></li>
+          <li><span class="track-number">04</span><div><h3>Test va mashqlar</h3><p>Bilimingizni testlar orqali mustahkamlang</p></div></li>
+        </ol>
+      </section>
+    </section>
+  </main>
+
+  <footer>Sputnik Academy <span>·</span> Topshiriqlarni bajarib, bilimni amalda mustahkamlang</footer>
+</body>
+</html>
