@@ -400,3 +400,65 @@ class Urinish(models.Model):
                 self.number = (last or 0) + 1
                 return super().save(*args, **kwargs)
         return super().save(*args, **kwargs)
+
+
+class NazoratHodisasi(models.Model):
+    """Imtihon davomida aniqlangan nazorat hodisalari (anti-cheat).
+
+    Brauzer (ExamGuard.js) faqat JIDDIY hodisalarni serverga yuboradi.
+    Ularning soni NAZORAT_CHEGARASI dan oshsa — topshirish bloklanadi.
+
+    Jiddiy kodlar (buzilish sifatida sanaladi):
+      - 1_FULLSCREEN_EXIT   to'liq ekrandan chiqish (Esc / kichiklashtirish)
+      - 2_VISIBILITY_HIDDEN boshqa tab, minimallashtirish yoki boshqa ilova
+
+    Sanalmaydiganlar (faqat tarix uchun saqlanadi):
+      - 2_VISIBILITY_VISIBLE  sahifaga qaytish
+      - BLOCKED_*             bloklangan urinishlar (ular oldindan to'silgan)
+    """
+
+    class Kod(models.TextChoices):
+        FULLSCREEN_EXIT = "1_FULLSCREEN_EXIT", "To'liq ekrandan chiqish"
+        VISIBILITY_HIDDEN = "2_VISIBILITY_HIDDEN", "Boshqa tab/oynaga o'tish"
+        VISIBILITY_VISIBLE = "2_VISIBILITY_VISIBLE", "Sahifaga qaytish"
+        WINDOW_BLUR = "3_WINDOW_BLUR", "Oyna fokusini yo'qotish"
+        BLOCKED_SHORTCUT = "BLOCKED_SHORTCUT", "Bloklangan klavish kombinatsiyasi"
+        BLOCKED_DEVTOOLS = "BLOCKED_DEVTOOLS", "DevTools urinishi"
+        BLOCKED_CONTEXT_MENU = "BLOCKED_CONTEXT_MENU", "O'ng tugma menyusi bloklandi"
+
+    # Shu kodlar BUZILISH deb hisoblanadi (NAZORAT_CHEGARASI shular uchun)
+    JIDDIY_KODLAR = (Kod.FULLSCREEN_EXIT, Kod.VISIBILITY_HIDDEN)
+
+    task = models.ForeignKey(
+        Topshiriqlar,
+        on_delete=models.CASCADE,
+        related_name="nazorat_hodisalari",
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="nazorat_hodisalari",
+    )
+
+    code = models.CharField(max_length=40, choices=Kod.choices)
+    message = models.TextField(blank=True)
+    # Brauzer beradigan noyob identifikator (qayta yuborilganda dublikat bo'lmasligi uchun)
+    uid = models.CharField(max_length=64, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        verbose_name = "Nazorat hodisasi"
+        verbose_name_plural = "Nazorat hodisalari"
+        indexes = [
+            models.Index(fields=["task", "user", "code"]),
+            models.Index(fields=["task", "user", "uid"]),
+        ]
+
+    def __str__(self):
+        return f"{self.user} — {self.get_code_display()} ({self.task_id})"
+
+    @property
+    def jiddiymi(self):
+        """Buzilish sifatida sanaladimi?"""
+        return self.code in NazoratHodisasi.JIDDIY_KODLAR

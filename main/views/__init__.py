@@ -14,6 +14,7 @@ Barcha view'lar shu yerdan qayta eksport qilinadi, shuning uchun
 
 from .auth import CustomLoginView, CustomLogoutView, HomeView
 from .dashboard import TalabaDashBoard, TopshiriqlarView
+from .nazorat import NazoratView
 from .quiz import TestniBoshlash, TestResultView
 from .submissions import RunCodeView,AlgorithmNatija
 from .tasks import TaskDetailView
@@ -24,6 +25,7 @@ __all__ = [
     "HomeView",
     "RunCodeView",
     "TalabaDashBoard",
+    "NazoratView",
     "TaskDetailView",
     "TestResultView",
     "TestniBoshlash",

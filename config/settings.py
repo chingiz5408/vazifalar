@@ -224,6 +224,15 @@ CODE_RUNNER_SUPPORTED_LANGUAGE = "python"
 
 
 # ==========================================================================
+# Imtihon nazorati (anti-cheat)
+# ==========================================================================
+# Jiddiy buzilishlar (to'liq ekrandan chiqish / boshqa tabga o'tish) shu
+# sondan oshsa — topshirish bloklanadi. .env orqali o'zgartirish mumkin:
+#   NAZORAT_CHEGARASI=3
+NAZORAT_CHEGARASI = int(os.environ.get("NAZORAT_CHEGARASI", "3"))
+
+
+# ==========================================================================
 # Jurnal (logging) — serverda xatolarni ko'rish uchun
 # ==========================================================================
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO" if not DEBUG else "DEBUG").upper()

@@ -4,6 +4,7 @@ from .views import (
     CustomLoginView,
     CustomLogoutView,
     HomeView,
+    NazoratView,
     RunCodeView,
     TalabaDashBoard,
     TaskDetailView,
@@ -23,5 +24,6 @@ urlpatterns = [
     path("kod_run/", RunCodeView.as_view(), name="kod_run"),
     path("test/<slug:slug>/result/", TestResultView.as_view(), name="test_result"),
     path("algorithm_submit/<slug:slug>/", AlgorithmNatija.as_view(), name="algorithm_submit"),
+    path("nazorat/<slug:slug>/", NazoratView.as_view(), name="nazorat"),
     path("", HomeView.as_view(), name="index"),
 ]

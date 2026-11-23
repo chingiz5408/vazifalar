@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
 from ..models import Topshiriqlar
+from ..services import nazorat as nazorat_service
 from ..services.tasks import (
     get_algorithm_workspace,
     get_programming_workspace,
@@ -38,6 +39,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         task = self.get_task()
         context["task"] = task
+        context["nazorat"] = nazorat_service.holat(task, self.request.user)
 
         if task.turi == Topshiriqlar.TopshiriqTuri.TEST:
             context["savollar"] = get_test_questions(task)

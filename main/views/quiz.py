@@ -7,6 +7,8 @@ from django.views.generic import TemplateView
 
 from ..services.quiz import get_test_task, submit_test
 from ..services.tasks import get_task_for_detail, get_test_questions
+from ..services import nazorat as nazorat_service
+from .utils import nazorat_bloklagan
 
 
 class TestniBoshlash(LoginRequiredMixin, TemplateView):
@@ -18,6 +20,7 @@ class TestniBoshlash(LoginRequiredMixin, TemplateView):
         task = get_task_for_detail(self.kwargs.get("slug"))
         context["task"] = task
         context["savollar"] = get_test_questions(task)
+        context["nazorat"] = nazorat_service.holat(task, self.request.user)
         return context
 
 
@@ -26,6 +29,12 @@ class TestResultView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         task = get_test_task(kwargs.get("slug"))
+
+        # Nazorat chegarasi oshgan bo'lsa — topshirish taqiqlanadi
+        blok = nazorat_bloklagan(task, request.user)
+        if blok is not None:
+            return blok
+
         result = submit_test(request.user, task, request.POST.getlist("answer"))
 
         return JsonResponse({"status": "success", **result})

@@ -145,6 +145,16 @@
 <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'main/Alert.js' %}"></script>
+<!-- Imtihon nazorati: to'liq ekrandan chiqish, tab almashtirish, bloklangan tugmalar -->
+<script>
+    window.ExamGuardConfig = {
+        url: "{% url 'nazorat' task.slug %}",
+        blocked: {{ nazorat.bloklangan|yesno:"true,false" }},
+        soni: {{ nazorat.soni|default:0 }},
+        chegara: {{ nazorat.chegara|default:3 }}
+    };
+</script>
+<script src="{% static 'main/ExamGuard.js' %}"></script>
 
 <script>
     (() => {
@@ -197,6 +207,7 @@
             } catch (_) {}
         }
         started = true;
+        if (window.ExamGuard) ExamGuard.start();
         syncGate();
     });
 

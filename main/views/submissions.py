@@ -11,7 +11,7 @@ from ..forms import RunCodeForm
 from ..services.runner import RunnerError
 from ..services.submissions import NoTestCases, submit_solution
 from ..services.tasks import get_task_by_slug
-from .utils import first_form_error, json_error
+from .utils import first_form_error, json_error, nazorat_bloklagan
 from ..models import Urinish, Topshiriqlar
 import json
  
@@ -36,6 +36,11 @@ class RunCodeView(LoginRequiredMixin, View):
         task = get_task_by_slug(form.cleaned_data["task"])
         if not task:
             return json_error("Topshiriq topilmadi.", 404)
+
+        # Nazorat chegarasi oshgan bo'lsa — topshirish taqiqlanadi
+        blok = nazorat_bloklagan(task, request.user)
+        if blok is not None:
+            return blok
 
         # 3) Tekshirish va urinishni saqlash
         try:
@@ -72,7 +77,12 @@ class AlgorithmNatija(LoginRequiredMixin, View):
  
     def post(self, request, slug):
         task = get_object_or_404(Topshiriqlar, slug=slug)
- 
+
+        # Nazorat chegarasi oshgan bo'lsa — topshirish taqiqlanadi
+        blok = nazorat_bloklagan(task, request.user)
+        if blok is not None:
+            return blok
+
         try:
             data = json.loads(request.body)
         except (ValueError, UnicodeDecodeError):

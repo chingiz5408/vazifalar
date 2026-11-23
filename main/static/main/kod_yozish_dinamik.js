@@ -81,6 +81,7 @@
         } catch (_) {}
       }
       started = true;
+      if (window.ExamGuard) ExamGuard.start();
       syncGate();
     });
   }

@@ -303,8 +303,23 @@
 <!-- Chiroyli xabarnomalar: SweetAlert2 + AppAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{% static 'main/Alert.js' %}"></script>
+<!-- Imtihon nazorati: tab almashtirish, fokus yo'qotish, bloklangan tugmalar -->
+<script>
+  window.ExamGuardConfig = {
+    url: "{% url 'nazorat' task.slug %}",
+    blocked: {{ nazorat.bloklangan|yesno:"true,false" }},
+    soni: {{ nazorat.soni|default:0 }},
+    chegara: {{ nazorat.chegara|default:3 }}
+  };
+</script>
+<script src="{% static 'main/ExamGuard.js' %}"></script>
 <script src="{% static 'main/Algoritm bajarish.js' %}"></script>
 <script src="{% static 'main/Algoritm muharriri.js' %}"></script>
+<script>
+  // Algoritm sahifasida to'liq ekran darvozasi yo'q —
+  // shuning uchun nazorat sahifa ochilganoq boshlanadi.
+  if (window.ExamGuard) ExamGuard.start();
+</script>
 <script>
   (function () {
     const openButton = document.getElementById('task-open');

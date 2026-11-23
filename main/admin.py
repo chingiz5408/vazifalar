@@ -12,6 +12,7 @@ from .models import (
     TestVariantlari,
     Yozmavazifalar,
     ProgrammingVazifalar,
+    NazoratHodisasi,
 )
 from django.contrib.auth.admin import UserAdmin
 from django import forms
@@ -33,6 +34,33 @@ class UrinishlarAdmin(admin.ModelAdmin):
     list_filter = ["status", "created_at"]
     search_fields = ["user__username", "task__title"]
     ordering = ["-created_at"]
+
+
+@admin.register(NazoratHodisasi)
+class NazoratHodisasiAdmin(admin.ModelAdmin):
+    """Imtihon davomida aniqlangan buzilishlar (anti-cheat)."""
+
+    list_display = [
+        "created_at",
+        "user",
+        "task",
+        "code",
+        "jiddiymi",
+        "short_message",
+    ]
+    list_filter = ["code", "created_at", "task__turi"]
+    search_fields = ["user__username", "task__title", "message"]
+    ordering = ["-created_at"]
+    readonly_fields = ["created_at"]
+    date_hierarchy = "created_at"
+
+    @admin.display(boolean=True, description="Buzilish")
+    def jiddiymi(self, obj):
+        return obj.jiddiymi
+
+    @admin.display(description="Xabar")
+    def short_message(self, obj):
+        return (obj.message or "")[:80]
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
