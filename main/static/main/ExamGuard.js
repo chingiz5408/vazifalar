@@ -303,8 +303,15 @@
     });
 
     if (first) {
-      var msg = (data && data.error) ||
-        "Nazorat chegarasi oshdi — bu topshiriqni topshira olmaysiz.";
+      var msg = (data && data.error) || "";
+      if (!msg) {
+        msg = "Nazorat chegarasi oshdi";
+        if (data && typeof data.soni === "number") {
+          msg += ": " + data.soni + " ta buzilish aniqlandi";
+          if (typeof data.chegara === "number") msg += " (chegara: " + data.chegara + ")";
+        }
+        msg += ". Bu topshiriqni topshira olmaysiz.";
+      }
       showAlert(msg);
       if (badge) badge.style.color = "#ff7b72";
     }

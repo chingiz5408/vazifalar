@@ -202,7 +202,7 @@
   <script>
     window.ExamGuardConfig = {
       url: "{% url 'nazorat' task.slug %}",
-      blocked: {{ nazorat.bloklangan|yesno:"true,false" }},
+      blocked: {{ nazorat.bloklangan|default:False|yesno:"true,false" }},
       soni: {{ nazorat.soni|default:0 }},
       chegara: {{ nazorat.chegara|default:3 }}
     };
